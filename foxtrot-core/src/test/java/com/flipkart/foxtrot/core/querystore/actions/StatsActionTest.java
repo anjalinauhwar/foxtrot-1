@@ -15,11 +15,6 @@
  */
 package com.flipkart.foxtrot.core.querystore.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import com.collections.CollectionUtils;
 import com.flipkart.foxtrot.common.Document;
 import com.flipkart.foxtrot.common.Table;
@@ -31,23 +26,12 @@ import com.flipkart.foxtrot.common.query.general.EqualsFilter;
 import com.flipkart.foxtrot.common.query.numeric.BetweenFilter;
 import com.flipkart.foxtrot.common.query.numeric.GreaterThanFilter;
 import com.flipkart.foxtrot.common.query.numeric.LessThanFilter;
-import com.flipkart.foxtrot.common.stats.AnalyticsRequestFlags;
-import com.flipkart.foxtrot.common.stats.BucketResponse;
-import com.flipkart.foxtrot.common.stats.Stat;
-import com.flipkart.foxtrot.common.stats.StatsRequest;
-import com.flipkart.foxtrot.common.stats.StatsResponse;
+import com.flipkart.foxtrot.common.stats.*;
 import com.flipkart.foxtrot.core.TestUtils;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchQueryStore;
-import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchUtils;
 import com.flipkart.foxtrot.core.table.impl.ElasticsearchTestUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.joda.time.DateTime;
@@ -55,6 +39,13 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by rishabh.goyal on 29/04/14.
@@ -100,6 +91,11 @@ public class StatsActionTest extends ActionTest {
         ((ElasticsearchQueryStore) getQueryStore()).getCardinalityConfig()
                 .setMaxCardinality(1500);
         getTableMetadataManager().updateEstimationData(STATS_CARDINALITY_TEST_TABLE, time);
+    }
+
+    @After
+    public void afterMethod() {
+        ElasticsearchTestUtils.cleanupIndices(getElasticsearchConnection());
     }
 
     @Test

@@ -108,6 +108,11 @@ public class TrendActionTest extends ActionTest {
         getTableMetadataManager().updateEstimationData(TREND_CARDINALITY_TEST_TABLE, time);
     }
 
+    @After
+    public void afterMethod() {
+        ElasticsearchTestUtils.cleanupIndices(getElasticsearchConnection());
+    }
+
     //TODO trend action with null field is not working
     @Test
     public void testTrendActionNullField() throws FoxtrotException, JsonProcessingException {

@@ -32,12 +32,14 @@ import com.flipkart.foxtrot.common.stats.StatsTrendRequest;
 import com.flipkart.foxtrot.common.stats.StatsTrendResponse;
 import com.flipkart.foxtrot.core.TestUtils;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchQueryStore;
+import com.flipkart.foxtrot.core.table.impl.ElasticsearchTestUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import io.dropwizard.jackson.Jackson;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.joda.time.DateTime;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,6 +93,11 @@ public class StatsTrendActionTest extends ActionTest {
         ((ElasticsearchQueryStore) getQueryStore()).getCardinalityConfig()
                 .setMaxCardinality(1500);
         getTableMetadataManager().updateEstimationData(STATS_TREND_CARDINALITY_TEST_TABLE, time);
+    }
+
+    @After
+    public void afterMethod() {
+        ElasticsearchTestUtils.cleanupIndices(getElasticsearchConnection());
     }
 
     @Test
