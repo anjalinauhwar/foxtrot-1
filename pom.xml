@@ -53,7 +53,7 @@
     </developers>
 
     <properties>
-        <caffeine.version>4.5.13</caffeine.version>
+        <caffeine.version>2.6.2</caffeine.version>
         <dropwizard.guicey.version>4.2.1</dropwizard.guicey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dropwizard.version>1.3.29</dropwizard.version>
@@ -283,25 +283,6 @@
             <artifactId>awaitility</artifactId>
             <version>4.0.2</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.phonepe.platform.http</groupId>
-            <artifactId>http-client</artifactId>
-            <version>1.7.15</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>io.github.openfeign</artifactId>
-                    <groupId>feign-jackson</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>io.github.openfeign</artifactId>
-                    <groupId>feign-okhttp</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>io.github.openfeign</artifactId>
-                    <groupId>feign-httpclient</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>

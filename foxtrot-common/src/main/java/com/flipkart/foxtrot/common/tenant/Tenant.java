@@ -6,15 +6,11 @@ import io.dropwizard.validation.ValidationMethod;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.aspectj.bridge.Message;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Data
