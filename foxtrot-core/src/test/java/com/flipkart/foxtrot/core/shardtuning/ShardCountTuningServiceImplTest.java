@@ -433,7 +433,7 @@ public class ShardCountTuningServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime4.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("prd-esfoxtrot101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -441,14 +441,14 @@ public class ShardCountTuningServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime5.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("prd-esfoxtrot101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime5.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("prd-esfoxtrot101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 

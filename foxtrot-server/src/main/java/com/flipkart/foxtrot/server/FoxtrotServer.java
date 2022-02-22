@@ -31,7 +31,6 @@ import com.flipkart.foxtrot.server.config.FoxtrotServerConfiguration;
 import com.flipkart.foxtrot.server.di.FoxtrotModule;
 import com.google.common.base.Strings;
 import com.google.inject.Stage;
-import com.phonepe.rosey.dwconfig.RoseyConfigSourceProvider;
 import io.appform.dropwizard.discovery.bundle.ServiceDiscoveryBundle;
 import io.appform.dropwizard.discovery.bundle.ServiceDiscoveryConfiguration;
 import io.appform.functionmetrics.FunctionMetricsManager;
@@ -78,10 +77,6 @@ public class FoxtrotServer extends Application<FoxtrotServerConfiguration> {
         if (localConfig) {
             bootstrap.setConfigurationSourceProvider(
                     new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
-                            new EnvironmentVariableSubstitutor()));
-        } else {
-            bootstrap.setConfigurationSourceProvider(
-                    new SubstitutingSourceProvider(new RoseyConfigSourceProvider(teamId, "foxtrot"),
                             new EnvironmentVariableSubstitutor()));
         }
         bootstrap.addBundle(new AssetsBundle("/console/", "/", "index.html", "console"));

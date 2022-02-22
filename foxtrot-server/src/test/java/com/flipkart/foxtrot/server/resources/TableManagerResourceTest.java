@@ -12,51 +12,17 @@
  */
 package com.flipkart.foxtrot.server.resources;
 
-import static com.flipkart.foxtrot.common.FieldDataType.BOOLEAN;
-import static com.flipkart.foxtrot.common.FieldDataType.DATE;
-import static com.flipkart.foxtrot.common.FieldDataType.DOUBLE;
-import static com.flipkart.foxtrot.common.FieldDataType.FLOAT;
-import static com.flipkart.foxtrot.common.FieldDataType.INTEGER;
-import static com.flipkart.foxtrot.common.FieldDataType.KEYWORD;
-import static com.flipkart.foxtrot.common.FieldDataType.LONG;
-import static com.flipkart.foxtrot.common.FieldDataType.NESTED;
-import static com.flipkart.foxtrot.common.FieldDataType.TEXT;
-import static com.flipkart.foxtrot.common.Table.DEFAULT_COLUMNS;
-import static com.flipkart.foxtrot.core.TestUtils.TEST_TABLE_NAME;
-import static com.flipkart.foxtrot.core.TestUtils.TEST_TENANT_NAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-
 import com.flipkart.foxtrot.common.FieldDataType;
-
 import com.flipkart.foxtrot.common.Table;
 import com.flipkart.foxtrot.common.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.core.TestUtils;
 import com.flipkart.foxtrot.core.datastore.DataStore;
 import com.flipkart.foxtrot.core.parsers.ElasticsearchTemplateMappingParser;
-import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchConnection;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchUtils;
 import com.flipkart.foxtrot.core.table.TableManager;
 import com.flipkart.foxtrot.core.table.impl.FoxtrotTableManager;
 import com.flipkart.foxtrot.server.ResourceTestUtils;
 import io.dropwizard.testing.junit.ResourceTestRule;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.UUID;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.indices.GetIndexTemplatesRequest;
@@ -68,6 +34,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.*;
+
+import static com.flipkart.foxtrot.common.FieldDataType.*;
+import static com.flipkart.foxtrot.common.Table.DEFAULT_COLUMNS;
+import static com.flipkart.foxtrot.core.TestUtils.TEST_TABLE_NAME;
+import static com.flipkart.foxtrot.core.TestUtils.TEST_TENANT_NAME;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
+
 /**
  * Created by rishabh.goyal on 04/05/14.
  */
@@ -78,12 +58,10 @@ public class TableManagerResourceTest extends FoxtrotResourceTest {
     public ResourceTestRule resources;
 
     private TableManager tableManager;
-    private ElasticsearchConnection elasticsearchConnection;
     private ElasticsearchTemplateMappingParser templateMappingParser;
 
     public TableManagerResourceTest() throws Exception {
         super();
-        this.elasticsearchConnection = getElasticsearchConnection();
         DataStore dataStore = mock(DataStore.class);
         Mockito.doNothing()
                 .when(dataStore)

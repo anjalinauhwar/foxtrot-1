@@ -71,6 +71,8 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
@@ -105,8 +107,6 @@ public abstract class FoxtrotResourceTest {
     protected final Configuration configuration = mock(Configuration.class);
     private final ObjectMapper mapper;
     private final HazelcastInstance hazelcastInstance;
-    private final HazelcastConnection hazelcastConnection;
-    private final ElasticsearchConnection elasticsearchConnection;
     private final TableMetadataManager tableMetadataManager;
     private final TenantMetadataManager tenantMetadataManager;
     private final PipelineMetadataManager pipelineMetadataManager;
@@ -125,6 +125,9 @@ public abstract class FoxtrotResourceTest {
     private CardinalityCalculationService cardinalityCalculationService;
     private ElasticsearchTemplateMappingParser templateMappingParser;
     private QueryManager queryManager;
+
+    protected static HazelcastConnection hazelcastConnection;
+    protected static ElasticsearchConnection elasticsearchConnection;
 
     @SneakyThrows
     protected FoxtrotResourceTest() throws IOException {
@@ -246,5 +249,12 @@ public abstract class FoxtrotResourceTest {
                 funnelConfiguration);
         queryExecutorFactory = new QueryExecutorFactory(analyticsLoader, executorService,
                 Collections.singletonList(new ResponseCacheUpdater(cacheManager)), funnelConfiguration, funnelStore);
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        hazelcastConnection.getHazelcast()
+                .shutdown();
+        elasticsearchConnection.stop();
     }
 }
