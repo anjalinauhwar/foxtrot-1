@@ -93,7 +93,7 @@ public class ClusterRebalanceServiceTest {
                         .totalShardsPerNode(3)
                         .build())
                 .groupName("payment")
-                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elaticsearch1*", "elaticsearch2*", "elaticsearch3*")))
+                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elasticsearch1*", "elasticsearch2*", "elasticsearch3*")))
                 .build();
 
         AllocatedESNodeGroup commonGroup = AllocatedESNodeGroup.builder()
@@ -101,7 +101,7 @@ public class ClusterRebalanceServiceTest {
                         .totalShardsPerNode(3)
                         .build())
                 .groupName("common")
-                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elaticsearch4*", "elaticsearch5*", "elaticsearch6*")))
+                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elasticsearch4*", "elasticsearch5*", "elasticsearch6*")))
                 .build();
 
         Mockito.when(nodeGroupManager.getNodeGroups())
@@ -113,18 +113,18 @@ public class ClusterRebalanceServiceTest {
         List<ShardInfoResponse> shardInfoResponses = new ArrayList<>();
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "elaticsearch101.test.nmx", 1));
+                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "elasticsearch101.test.nmx", 1));
         shardInfoResponses.addAll(
-                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "elaticsearch201.test.nmx", 2));
+                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "elasticsearch201.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "elaticsearch301.test.nmx", 11));
+                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "elasticsearch301.test.nmx", 11));
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "elaticsearch401.test.nmx", 2));
+                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "elasticsearch401.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "elaticsearch501.test.nmx", 4));
+                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "elasticsearch501.test.nmx", 4));
         shardInfoResponses.addAll(
-                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "elaticsearch601.test.nmx", 40));
+                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "elasticsearch601.test.nmx", 40));
 
         setupWireMockGet(String.format(SHARD_STATS_ENDPOINT, ElasticsearchUtils.getTableIndexPattern()), 200,
                 JsonUtils.toJson(shardInfoResponses));
@@ -152,7 +152,7 @@ public class ClusterRebalanceServiceTest {
                         .totalShardsPerNode(3)
                         .build())
                 .groupName("payment")
-                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elaticsearch1*", "elaticsearch2*", "elaticsearch3*")))
+                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elasticsearch1*", "elasticsearch2*", "elasticsearch3*")))
                 .build();
 
         AllocatedESNodeGroup commonGroup = AllocatedESNodeGroup.builder()
@@ -160,7 +160,7 @@ public class ClusterRebalanceServiceTest {
                         .totalShardsPerNode(3)
                         .build())
                 .groupName("common")
-                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elaticsearch4*", "elaticsearch5*", "elaticsearch6*")))
+                .nodePatterns(Sets.newTreeSet(Sets.newHashSet("elasticsearch4*", "elasticsearch5*", "elasticsearch6*")))
                 .build();
 
         Mockito.when(nodeGroupManager.getNodeGroups())
@@ -172,18 +172,18 @@ public class ClusterRebalanceServiceTest {
         List<ShardInfoResponse> shardInfoResponses = new ArrayList<>();
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "elaticsearch101.test.nmx", 1));
+                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "elasticsearch101.test.nmx", 1));
         shardInfoResponses.addAll(
-                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "elaticsearch201.test.nmx", 2));
+                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "elasticsearch201.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "elaticsearch301.test.nmx", 11));
+                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "elasticsearch301.test.nmx", 11));
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "elaticsearch401.test.nmx", 2));
+                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "elasticsearch401.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "elaticsearch501.test.nmx", 4));
+                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "elasticsearch501.test.nmx", 4));
         shardInfoResponses.addAll(
-                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "elaticsearch601.test.nmx", 40));
+                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "elasticsearch601.test.nmx", 40));
 
         setupWireMockGet(String.format(SHARD_STATS_ENDPOINT, ElasticsearchUtils.getTableIndexPattern()), 200,
                 JsonUtils.toJson(shardInfoResponses));

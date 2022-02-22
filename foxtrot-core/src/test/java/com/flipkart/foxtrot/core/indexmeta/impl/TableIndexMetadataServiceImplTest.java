@@ -150,14 +150,14 @@ public class TableIndexMetadataServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime1.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime1.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -165,14 +165,14 @@ public class TableIndexMetadataServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime2.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime2.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -180,14 +180,14 @@ public class TableIndexMetadataServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime3.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime3.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -195,14 +195,14 @@ public class TableIndexMetadataServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime4.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime4.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -210,14 +210,14 @@ public class TableIndexMetadataServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime5.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime5.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 

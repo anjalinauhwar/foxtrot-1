@@ -58,6 +58,7 @@ import com.google.common.eventbus.EventBus;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.test.TestHazelcastInstanceFactory;
+import java.util.ArrayList;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
@@ -239,26 +240,21 @@ public class QueryExecutorTest {
     }
 
     @Test
-    @Ignore
     //TODO Fix this test
     public void testExtrapolationQueryExecutorFactoryWithCountRequest() {
-        ActionRequest actionRequest = new CountRequest();
         Filter filter = EqualsFilter.builder()
                 .field(FunnelExtrapolationUtils.FUNNEL_ID_QUERY_FIELD)
                 .value("123")
                 .build();
-        actionRequest.getFilters()
-                .add(filter);
+        List<Filter> filters = new ArrayList<>();
+        filters.add(filter);
+        ActionRequest actionRequest = CountRequest.builder().filters(filters).build();
         actionRequest.setExtrapolationFlag(true);
         funnelConfiguration.setEnabled(true);
         queryExecutorFactory = new QueryExecutorFactory(analyticsLoader, executorService,
                 Collections.singletonList(new ResponseCacheUpdater(cacheManager)), funnelConfiguration, funnelStore);
         QueryExecutor queryExecutor = queryExecutorFactory.getExecutor(actionRequest);
-        if (queryExecutor instanceof ExtrapolationQueryExecutor) {
-            Assert.assertTrue(true);
-        } else {
-            Assert.fail();
-        }
+        Assert.assertTrue(queryExecutor instanceof ExtrapolationQueryExecutor);
     }
 
 }

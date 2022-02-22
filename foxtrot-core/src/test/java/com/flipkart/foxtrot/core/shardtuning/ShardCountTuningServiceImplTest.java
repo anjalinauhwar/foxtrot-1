@@ -132,7 +132,7 @@ public class ShardCountTuningServiceImplTest {
         AllocatedESNodeGroup paymentGroup = AllocatedESNodeGroup.builder()
                 .groupName("payment")
                 .nodePatterns(
-                        new TreeSet<>(Lists.newArrayList("elaticsearch10*", "elaticsearch20*", "elaticsearch30*")))
+                        new TreeSet<>(Lists.newArrayList("elasticsearch10*", "elasticsearch20*", "elasticsearch30*")))
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(2)
                         .tables(new TreeSet<>(Lists.newArrayList("payment")))
@@ -143,37 +143,37 @@ public class ShardCountTuningServiceImplTest {
                 .thenReturn(paymentGroup);
 
         TreeMap<String, DiskUsageInfo> nodeInfoMap = new TreeMap<String, DiskUsageInfo>();
-        nodeInfoMap.put("elaticsearch101.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch101.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch102.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch102.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch201.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch201.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch202.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch202.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch301.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch301.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch302.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch302.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
@@ -241,7 +241,7 @@ public class ShardCountTuningServiceImplTest {
         AllocatedESNodeGroup paymentGroup = AllocatedESNodeGroup.builder()
                 .groupName("payment")
                 .nodePatterns(
-                        new TreeSet<>(Lists.newArrayList("elaticsearch10*", "elaticsearch20*", "elaticsearch30*")))
+                        new TreeSet<>(Lists.newArrayList("elasticsearch10*", "elasticsearch20*", "elasticsearch30*")))
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(2)
                         .tables(new TreeSet<>(Lists.newArrayList("payment")))
@@ -252,37 +252,37 @@ public class ShardCountTuningServiceImplTest {
                 .thenReturn(paymentGroup);
 
         TreeMap<String, DiskUsageInfo> nodeInfoMap = new TreeMap<String, DiskUsageInfo>();
-        nodeInfoMap.put("elaticsearch101.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch101.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch102.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch102.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch201.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch201.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch202.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch202.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch301.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch301.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
                 .usedDiskStorage("100G")
                 .build());
-        nodeInfoMap.put("elaticsearch302.com", DiskUsageInfo.builder()
+        nodeInfoMap.put("elasticsearch302.com", DiskUsageInfo.builder()
                 .availableDiskStorage("100G")
                 .totalDiskStorage("200G")
                 .usedDiskPercentage("50%")
@@ -381,14 +381,14 @@ public class ShardCountTuningServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime1.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime1.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -396,14 +396,14 @@ public class ShardCountTuningServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime2.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime2.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -411,14 +411,14 @@ public class ShardCountTuningServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime3.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime3.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.REPLICA.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
 
@@ -426,7 +426,7 @@ public class ShardCountTuningServiceImplTest {
                 .index("foxtrot-payment-table-" + FORMATTER.print(dateTime4.getMillis()))
                 .shard("0")
                 .primaryOrReplica(ShardType.PRIMARY.getName())
-                .node("elaticsearch101.com")
+                .node("elasticsearch101.com")
                 .state("STARTED")
                 .build());
         tableShardsInfo.add(ShardInfoResponse.builder()
