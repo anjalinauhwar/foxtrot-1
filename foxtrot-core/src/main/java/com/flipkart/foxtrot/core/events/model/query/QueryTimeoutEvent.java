@@ -1,8 +1,8 @@
 package com.flipkart.foxtrot.core.events.model.query;
 
 import com.flipkart.foxtrot.common.enums.SourceType;
+import com.flipkart.foxtrot.core.events.model.Event;
 import com.flipkart.foxtrot.core.events.model.TrackingEvent;
-import com.phonepe.models.dataplatform.Event;
 import lombok.Builder;
 import lombok.Data;
 

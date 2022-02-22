@@ -1,15 +1,14 @@
 package com.flipkart.foxtrot.core.events.model.shardrebalance;
 
-import static com.flipkart.foxtrot.common.Constants.APP_NAME;
-
+import com.flipkart.foxtrot.core.events.model.Event;
 import com.flipkart.foxtrot.core.events.model.TrackingEvent;
-import com.phonepe.models.dataplatform.Event;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.UUID;
 
-import lombok.Builder;
-import lombok.Data;
+import static com.flipkart.foxtrot.common.Constants.APP_NAME;
 
 @Data
 @Builder

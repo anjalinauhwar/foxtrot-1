@@ -1,14 +1,13 @@
 package com.flipkart.foxtrot.core.events;
 
+import com.flipkart.foxtrot.core.events.model.Event;
 import com.google.common.eventbus.EventBus;
-import com.phonepe.models.dataplatform.Event;
 import io.dropwizard.lifecycle.Managed;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Singleton

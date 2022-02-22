@@ -58,13 +58,11 @@ import com.google.common.eventbus.EventBus;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.test.TestHazelcastInstanceFactory;
-import com.phonepe.dataplatform.EventIngestorClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -98,7 +96,6 @@ public class QueryExecutorTest {
     private FunnelConfiguration funnelConfiguration;
     private ElasticsearchFunnelStore funnelStore;
     private CacheManager cacheManager;
-    private EventIngestorClient eventIngestorClient;
     private RestHighLevelClient restHighLevelClient;
 
     @BeforeClass
@@ -150,8 +147,6 @@ public class QueryExecutorTest {
                         .category("APP_LOADED")
                         .build())
                 .build();
-
-        this.eventIngestorClient = Mockito.mock(EventIngestorClient.class);
 
         EventBus eventBus = new AsyncEventBus(Executors.newCachedThreadPool());
         EventBusManager eventBusManager = new EventBusManager(eventBus, new EventIngestionClient());

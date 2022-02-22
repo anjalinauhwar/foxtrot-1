@@ -353,7 +353,7 @@
                             <target>${jdk.version}</target>
                             <showWeaveInfo>true</showWeaveInfo>
                             <forceAjcCompile>true</forceAjcCompile>
-                            <sources />
+                            <sources/>
                             <weaveDirectories>
                                 <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
                             </weaveDirectories>
@@ -424,7 +424,7 @@
                     <target>${jdk.version}</target>
                     <showWeaveInfo>true</showWeaveInfo>
                     <forceAjcCompile>true</forceAjcCompile>
-                    <sources />
+                    <sources/>
                     <weaveDirectories>
                         <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
                     </weaveDirectories>

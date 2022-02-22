@@ -33,7 +33,6 @@ import com.flipkart.foxtrot.pipeline.PipelineConfiguration;
 import com.flipkart.foxtrot.pipeline.resources.GeojsonStoreConfiguration;
 import com.foxtrot.flipkart.translator.config.SegregationConfiguration;
 import com.foxtrot.flipkart.translator.config.TranslatorConfig;
-import com.phonepe.dataplatform.EventIngestorClientConfig;
 import io.appform.dropwizard.discovery.bundle.ServiceDiscoveryConfiguration;
 import io.dropwizard.Configuration;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
@@ -139,9 +138,6 @@ public class FoxtrotServerConfiguration extends Configuration {
     private TextNodeRemoverConfiguration textNodeRemover = new TextNodeRemoverConfiguration();
 
     @Valid
-    private EventIngestorClientConfig eventIngestorConfig;
-
-    @Valid
     private NodeGroupActivityConfig nodeGroupActivityConfig;
 
     @Valid
@@ -162,7 +158,6 @@ public class FoxtrotServerConfiguration extends Configuration {
         this.restrictedTables = new ArrayList<>();
         this.queryConfig = new QueryConfig();
         this.elasticsearchTuningConfig = new ElasticsearchTuningConfig();
-        this.eventIngestorConfig = new EventIngestorClientConfig();
         this.pipelineConfiguration = new PipelineConfiguration();
         this.shardRebalanceJobConfig = new ShardRebalanceJobConfig();
         this.geojsonStoreConfiguration = new GeojsonStoreConfiguration();

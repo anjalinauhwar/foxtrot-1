@@ -1,8 +1,8 @@
 package com.flipkart.foxtrot.core.events;
 
+import com.flipkart.foxtrot.core.events.model.Event;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Singleton;
-import com.phonepe.models.dataplatform.Event;
 import io.dropwizard.lifecycle.Managed;
 import lombok.extern.slf4j.Slf4j;
 
