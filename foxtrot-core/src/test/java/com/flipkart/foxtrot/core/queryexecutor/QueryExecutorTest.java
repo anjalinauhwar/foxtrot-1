@@ -18,11 +18,8 @@ import com.flipkart.foxtrot.common.Query;
 import com.flipkart.foxtrot.common.count.CountRequest;
 import com.flipkart.foxtrot.common.exception.ErrorCode;
 import com.flipkart.foxtrot.common.exception.FoxtrotException;
-import com.flipkart.foxtrot.common.group.GroupRequest;
 import com.flipkart.foxtrot.common.query.Filter;
 import com.flipkart.foxtrot.common.query.general.EqualsFilter;
-import com.flipkart.foxtrot.common.query.string.ContainsFilter;
-import com.flipkart.foxtrot.common.util.JsonUtils;
 import com.flipkart.foxtrot.common.util.SerDe;
 import com.flipkart.foxtrot.core.TestUtils;
 import com.flipkart.foxtrot.core.cache.CacheManager;
@@ -34,12 +31,8 @@ import com.flipkart.foxtrot.core.common.noncacheable.NonCacheableAction;
 import com.flipkart.foxtrot.core.common.noncacheable.NonCacheableActionRequest;
 import com.flipkart.foxtrot.core.config.QueryConfig;
 import com.flipkart.foxtrot.core.datastore.DataStore;
-import com.flipkart.foxtrot.core.email.EmailConfig;
 import com.flipkart.foxtrot.core.events.EventBusManager;
 import com.flipkart.foxtrot.core.events.EventIngestionClient;
-import com.flipkart.foxtrot.core.events.model.query.FullTextSearchQueryEvent;
-import com.flipkart.foxtrot.core.events.model.query.QueryTimeoutEvent;
-import com.flipkart.foxtrot.core.events.model.query.SlowQueryEvent;
 import com.flipkart.foxtrot.core.funnel.config.BaseFunnelEventConfig;
 import com.flipkart.foxtrot.core.funnel.config.FunnelConfiguration;
 import com.flipkart.foxtrot.core.funnel.persistence.ElasticsearchFunnelStore;
@@ -60,21 +53,16 @@ import com.flipkart.foxtrot.core.querystore.impl.HazelcastConnection;
 import com.flipkart.foxtrot.core.table.TableMetadataManager;
 import com.flipkart.foxtrot.core.util.FunnelExtrapolationUtils;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.test.TestHazelcastInstanceFactory;
 import com.phonepe.dataplatform.EventIngestorClient;
-import com.phonepe.models.dataplatform.Event;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -82,16 +70,11 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-import static com.flipkart.foxtrot.common.enums.SourceType.SERVICE;
-import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -171,15 +154,12 @@ public class QueryExecutorTest {
         this.eventIngestorClient = Mockito.mock(EventIngestorClient.class);
 
         EventBus eventBus = new AsyncEventBus(Executors.newCachedThreadPool());
-        EventBusManager eventBusManager = new EventBusManager(eventBus, new EventIngestionClient(eventIngestorClient));
+        EventBusManager eventBusManager = new EventBusManager(eventBus, new EventIngestionClient());
         eventBusManager.start();
 
         QueryConfig queryConfig = QueryConfig.builder()
                 .slowQueryThresholdMs(0)
                 .timeoutExceptionMessages(Collections.singletonList("listener timeout after waiting"))
-                .build();
-
-        EmailConfig emailConfig = EmailConfig.builder()
                 .build();
 
         List<ActionExecutionObserver> actionExecutionObservers = ImmutableList.<ActionExecutionObserver>builder().add(
@@ -284,151 +264,4 @@ public class QueryExecutorTest {
         }
     }
 
-    @Test
-    public void shouldIngestQueryTimeoutEvent() throws Exception {
-        GroupRequest groupRequest = new GroupRequest();
-        groupRequest.setSourceType(SERVICE);
-        groupRequest.setRequestTags(ImmutableMap.of("serviceName", "anomaly-detection"));
-        groupRequest.setTable("payment");
-        groupRequest.setFilters(Collections.singletonList(EqualsFilter.builder()
-                .value("PAYMENT_COMPLETED")
-                .field("state")
-                .build()));
-
-        groupRequest.setNesting(Collections.singletonList("eventType"));
-
-        Mockito.when(restHighLevelClient.search(Mockito.any(SearchRequest.class)))
-                .thenThrow(new IOException("listener timeout after waiting for 90000 ms"));
-
-        try {
-            queryExecutor.execute(groupRequest);
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof FoxtrotException);
-        }
-        final ArgumentCaptor<Event> argumentCaptor = ArgumentCaptor.forClass(Event.class);
-        await().pollDelay(2000, TimeUnit.MILLISECONDS)
-                .until(() -> true);
-        Mockito.verify(eventIngestorClient, Mockito.times(1))
-                .send(argumentCaptor.capture());
-
-        Event publishedEvent = argumentCaptor.getValue();
-
-        Object eventData = publishedEvent.getEventData();
-        Assert.assertTrue(eventData instanceof QueryTimeoutEvent);
-        QueryTimeoutEvent queryTimeoutEvent = (QueryTimeoutEvent) eventData;
-
-        Assert.assertEquals(JsonUtils.toJson(groupRequest), queryTimeoutEvent.getActionRequest());
-        Assert.assertEquals("group", queryTimeoutEvent.getOpCode());
-        Assert.assertEquals(SERVICE, queryTimeoutEvent.getSourceType());
-        Assert.assertEquals("payment", queryTimeoutEvent.getTable());
-
-        Assert.assertTrue(queryTimeoutEvent.getRequestTags()
-                .containsKey("serviceName"));
-        Assert.assertEquals("anomaly-detection", queryTimeoutEvent.getRequestTags()
-                .get("serviceName"));
-
-    }
-
-    @Test
-    public void shouldIngestSlowQueryEvent() throws Exception {
-        GroupRequest groupRequest = new GroupRequest();
-        groupRequest.setSourceType(SERVICE);
-        groupRequest.setRequestTags(ImmutableMap.of("serviceName", "anomaly-detection"));
-        groupRequest.setTable("payment");
-        groupRequest.setFilters(Collections.singletonList(EqualsFilter.builder()
-                .value("PAYMENT_COMPLETED")
-                .field("state")
-                .build()));
-
-        groupRequest.setNesting(Collections.singletonList("eventType"));
-
-        SearchResponse searchResponse = Mockito.mock(SearchResponse.class);
-        Mockito.when(searchResponse.getAggregations())
-                .thenReturn(null);
-        Mockito.when(restHighLevelClient.search(Mockito.any(SearchRequest.class)))
-                .thenReturn(searchResponse);
-
-        queryExecutor.execute(groupRequest);
-        await().pollDelay(2000, TimeUnit.MILLISECONDS)
-                .until(() -> true);
-        final ArgumentCaptor<Event> argumentCaptor = ArgumentCaptor.forClass(Event.class);
-        Mockito.verify(eventIngestorClient, Mockito.atLeast(1))
-                .send(argumentCaptor.capture());
-
-        List<Event> events = argumentCaptor.getAllValues();
-
-        Assert.assertTrue(events.stream()
-                .anyMatch(event -> event.getEventData() instanceof SlowQueryEvent));
-
-        Optional<Event> optionalEvent = events.stream()
-                .filter(event -> event.getEventData() instanceof SlowQueryEvent)
-                .findFirst();
-
-        Event publishedEvent = optionalEvent.get();
-        Object eventData = publishedEvent.getEventData();
-        Assert.assertTrue(eventData instanceof SlowQueryEvent);
-        SlowQueryEvent slowQueryEvent = (SlowQueryEvent) eventData;
-
-        Assert.assertEquals(JsonUtils.toJson(groupRequest), slowQueryEvent.getActionRequest());
-        Assert.assertEquals("group", slowQueryEvent.getOpCode());
-        Assert.assertEquals(SERVICE, slowQueryEvent.getSourceType());
-        Assert.assertEquals("payment", slowQueryEvent.getTable());
-
-        Assert.assertTrue(slowQueryEvent.getRequestTags()
-                .containsKey("serviceName"));
-        Assert.assertEquals("anomaly-detection", slowQueryEvent.getRequestTags()
-                .get("serviceName"));
-    }
-
-    @Test
-    public void shouldIngestFullTextSearchQueryEvent() throws Exception {
-        GroupRequest groupRequest = new GroupRequest();
-        groupRequest.setSourceType(SERVICE);
-        groupRequest.setRequestTags(ImmutableMap.of("serviceName", "anomaly-detection"));
-        groupRequest.setTable("payment");
-        ContainsFilter containsFilter = new ContainsFilter();
-        containsFilter.setField("eventData.channel");
-        containsFilter.setValue("*android*");
-
-        groupRequest.setFilters(Collections.singletonList(containsFilter));
-
-        groupRequest.setNesting(Collections.singletonList("eventType"));
-
-        SearchResponse searchResponse = Mockito.mock(SearchResponse.class);
-        Mockito.when(searchResponse.getAggregations())
-                .thenReturn(null);
-        Mockito.when(restHighLevelClient.search(Mockito.any(SearchRequest.class)))
-                .thenReturn(searchResponse);
-
-        queryExecutor.execute(groupRequest);
-        await().pollDelay(2000, TimeUnit.MILLISECONDS)
-                .until(() -> true);
-        final ArgumentCaptor<Event> argumentCaptor = ArgumentCaptor.forClass(Event.class);
-        Mockito.verify(eventIngestorClient, Mockito.atLeast(1))
-                .send(argumentCaptor.capture());
-
-        List<Event> events = argumentCaptor.getAllValues();
-
-        Assert.assertTrue(events.stream()
-                .anyMatch(event -> event.getEventData() instanceof FullTextSearchQueryEvent));
-
-        Optional<Event> optionalEvent = events.stream()
-                .filter(event -> event.getEventData() instanceof FullTextSearchQueryEvent)
-                .findFirst();
-        Event publishedEvent = optionalEvent.get();
-        Object eventData = publishedEvent.getEventData();
-        Assert.assertTrue(eventData instanceof FullTextSearchQueryEvent);
-        FullTextSearchQueryEvent fullTextSearchQueryEvent = (FullTextSearchQueryEvent) eventData;
-
-        Assert.assertEquals(JsonUtils.toJson(groupRequest), fullTextSearchQueryEvent.getActionRequest());
-        Assert.assertEquals("group", fullTextSearchQueryEvent.getOpCode());
-        Assert.assertEquals(SERVICE, fullTextSearchQueryEvent.getSourceType());
-        Assert.assertEquals("payment", fullTextSearchQueryEvent.getTable());
-        Assert.assertTrue(fullTextSearchQueryEvent.getFullTextSearchFields()
-                .contains("eventData.channel"));
-        Assert.assertTrue(fullTextSearchQueryEvent.getRequestTags()
-                .containsKey("serviceName"));
-        Assert.assertEquals("anomaly-detection", fullTextSearchQueryEvent.getRequestTags()
-                .get("serviceName"));
-    }
 }

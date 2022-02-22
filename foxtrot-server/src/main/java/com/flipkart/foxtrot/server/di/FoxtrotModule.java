@@ -87,8 +87,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-import com.phonepe.dataplatform.EventIngestorClient;
-import io.appform.dropwizard.discovery.bundle.ServiceDiscoveryBundle;
 import io.dropwizard.server.ServerFactory;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.util.Duration;
@@ -106,12 +104,6 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  */
 public class FoxtrotModule extends AbstractModule {
-
-    private final ServiceDiscoveryBundle<FoxtrotServerConfiguration> serviceDiscoveryBundle;
-
-    public FoxtrotModule(final ServiceDiscoveryBundle<FoxtrotServerConfiguration> serviceDiscoveryBundle) {
-        this.serviceDiscoveryBundle = serviceDiscoveryBundle;
-    }
 
     @Override
     protected void configure() {
@@ -247,16 +239,6 @@ public class FoxtrotModule extends AbstractModule {
     public EventBus provideEventbus() {
         return new AsyncEventBus(Executors.newCachedThreadPool());
     }
-
-    @Provides
-    @Singleton
-    public EventIngestorClient provideEventIngestorClient(FoxtrotServerConfiguration configuration,
-                                                          Environment environment,
-                                                          ObjectMapper mapper) throws Exception {
-        return new EventIngestorClient(configuration.getEventIngestorConfig(), serviceDiscoveryBundle.getCurator(),
-                mapper, environment.metrics());
-    }
-
 
     @Provides
     @Singleton

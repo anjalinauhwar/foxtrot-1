@@ -64,6 +64,7 @@ import static org.mockito.Mockito.when;
 public abstract class ActionTest {
 
     protected static final int MAX_CARDINALITY = 15000;
+    protected static final String TEST_TENANT = "test-tenant";
     @Getter
     protected static DistributedTableMetadataManager tableMetadataManager;
     @Getter
