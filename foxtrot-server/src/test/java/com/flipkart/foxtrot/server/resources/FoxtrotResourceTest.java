@@ -71,6 +71,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
+import org.junit.After;
 import org.junit.Assert;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
@@ -246,5 +247,12 @@ public abstract class FoxtrotResourceTest {
                 funnelConfiguration);
         queryExecutorFactory = new QueryExecutorFactory(analyticsLoader, executorService,
                 Collections.singletonList(new ResponseCacheUpdater(cacheManager)), funnelConfiguration, funnelStore);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        hazelcastConnection.getHazelcast()
+                .shutdown();
+        elasticsearchConnection.stop();
     }
 }
