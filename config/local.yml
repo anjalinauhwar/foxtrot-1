@@ -8,7 +8,7 @@ server:
 
 elasticsearch:
   hosts:
-  - localhost
+    - localhost
   cluster: foxtrot
   tableNamePrefix: foxtrot
   getQueryTimeout: 10000
@@ -48,7 +48,7 @@ restrictedTables:
 
 cardinality:
   enabled: true
-#  retryCount: 3
+  #  retryCount: 3
   batchSize: 10
   active: true
   interval: 86400
@@ -95,7 +95,7 @@ restrictAccess: false
 swagger:
   resourcePackage: com.flipkart.foxtrot.server.resources
   title: Foxtrot
-  description: A store abstraction and analytics system for real-time event data.
+  description: A store abstraction and analytics http://siphon-ui.test system for real-time event data.
   uriPrefix: "/foxtrot"
 
 distributedLockConfig:
@@ -106,7 +106,7 @@ distributedLockConfig:
 funnelConfiguration:
   querySize: 100
   funnelIndex: foxtrot_funnel
-  funnelConsoleUrl: http://siphon-ui.traefik.stg.test.com/#/
+  funnelConsoleUrl: http://siphon-ui.test.com/#/
   defaultVersionCodeFilter:
     operator: greater_equal
     field: eventData.versionCode
@@ -167,7 +167,7 @@ funnelConfiguration:
 eventIngestorConfig:
   usingZookeeper: true
   clientId: foxtrot
-  host: events.traefik.stg.test.nmx
+  host: events.test.nmx
   port: 80
   environment: stage
   serviceName: dp-ingestion-api
