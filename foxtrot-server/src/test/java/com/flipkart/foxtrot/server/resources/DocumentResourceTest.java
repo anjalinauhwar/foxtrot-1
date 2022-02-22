@@ -68,7 +68,7 @@ public class DocumentResourceTest extends FoxtrotResourceTest {
         resources.target("/v1/document/" + TestUtils.TEST_TABLE_NAME)
                 .request()
                 .post(documentEntity);
-        getElasticsearchConnection().refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
+        elasticsearchConnection.refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
         Document response = getQueryStore().get(TestUtils.TEST_TABLE_NAME, id);
         compare(document, response);
     }
@@ -131,7 +131,7 @@ public class DocumentResourceTest extends FoxtrotResourceTest {
         resources.target(String.format("/v1/document/%s/bulk", TestUtils.TEST_TABLE_NAME))
                 .request()
                 .post(listEntity);
-        getElasticsearchConnection().refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
+        elasticsearchConnection.refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
         compare(document1, getQueryStore().get(TestUtils.TEST_TABLE_NAME, id1));
         compare(document2, getQueryStore().get(TestUtils.TEST_TABLE_NAME, id2));
     }
@@ -209,7 +209,7 @@ public class DocumentResourceTest extends FoxtrotResourceTest {
                 .objectNode()
                 .put("D", "data"));
         getQueryStore().save(TestUtils.TEST_TABLE_NAME, document);
-        getElasticsearchConnection().refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
+        elasticsearchConnection.refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
         Document response = resources.target(String.format("/v1/document/%s/%s", TestUtils.TEST_TABLE_NAME, id))
                 .request()
                 .get(Document.class);
@@ -247,7 +247,7 @@ public class DocumentResourceTest extends FoxtrotResourceTest {
         documents.add(document1);
         documents.add(document2);
         getQueryStore().saveAll(TestUtils.TEST_TABLE_NAME, documents);
-        getElasticsearchConnection().refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
+        elasticsearchConnection.refresh(ElasticsearchUtils.getIndices(TestUtils.TEST_TABLE_NAME));
         String response = resources.target(String.format("/v1/document/%s", TestUtils.TEST_TABLE_NAME))
                 .queryParam("id", id1)
                 .queryParam("id", id2)

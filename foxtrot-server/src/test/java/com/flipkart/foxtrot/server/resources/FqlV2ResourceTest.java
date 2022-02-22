@@ -39,7 +39,7 @@ public class FqlV2ResourceTest extends FoxtrotResourceTest {
     public ResourceTestRule resources = ResourceTestRule.builder()
             .addResource(new FqlV2Resource(
                     new FqlEngine(getTableMetadataManager(), getQueryStore(), getQueryExecutorFactory(), getMapper()),
-                    new FqlStoreServiceImpl(getElasticsearchConnection(), getMapper()),
+                    new FqlStoreServiceImpl(elasticsearchConnection, getMapper()),
                     new QueryConfig(), queryManager))
             .addProvider(new FoxtrotExceptionMapper(getMapper()))
             .setMapper(objectMapper)

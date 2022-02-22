@@ -55,7 +55,7 @@ public class AnalyticsResourceTest extends FoxtrotResourceTest {
     public AnalyticsResourceTest() throws Exception {
         List<Document> documents = TestUtils.getGroupDocuments(getMapper());
         getQueryStore().saveAll(TestUtils.TEST_TABLE_NAME, documents);
-        getElasticsearchConnection().getClient()
+        elasticsearchConnection.getClient()
                 .indices()
                 .refresh(new RefreshRequest("*"), RequestOptions.DEFAULT);
         resources = ResourceTestUtils.testResourceBuilder(getMapper())

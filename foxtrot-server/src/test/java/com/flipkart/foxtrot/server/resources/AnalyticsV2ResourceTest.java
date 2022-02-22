@@ -40,7 +40,7 @@ public class AnalyticsV2ResourceTest extends FoxtrotResourceTest {
     public AnalyticsV2ResourceTest() throws IOException {
         List<Document> documents = TestUtils.getGroupDocuments(getMapper());
         getQueryStore().saveAll(TestUtils.TEST_TABLE_NAME, documents);
-        getElasticsearchConnection().getClient()
+        elasticsearchConnection.getClient()
                 .indices()
                 .refresh(new RefreshRequest("*"), RequestOptions.DEFAULT);
         queryManager = mock(QueryManager.class);
