@@ -14,10 +14,6 @@ import com.flipkart.foxtrot.core.config.QueryConfig;
 import com.flipkart.foxtrot.core.config.TextNodeRemoverConfiguration;
 import com.flipkart.foxtrot.core.datastore.DataStore;
 import com.flipkart.foxtrot.core.datastore.impl.hbase.HbaseTableConnection;
-import com.flipkart.foxtrot.core.email.EmailClient;
-import com.flipkart.foxtrot.core.email.RichEmailBuilder;
-import com.flipkart.foxtrot.core.events.EventBusManager;
-import com.flipkart.foxtrot.core.events.EventIngestionClient;
 import com.flipkart.foxtrot.core.parsers.ElasticsearchTemplateMappingParser;
 import com.flipkart.foxtrot.core.pipeline.impl.DistributedPipelineMetadataManager;
 import com.flipkart.foxtrot.core.queryexecutor.QueryExecutor;
@@ -41,7 +37,6 @@ import com.flipkart.foxtrot.pipeline.processors.factory.ReflectionBasedProcessor
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.eventbus.AsyncEventBus;
 import com.google.inject.Guice;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.HazelcastInstance;
@@ -157,10 +152,6 @@ public abstract class ActionTest {
         analyticsLoader.start();
         ExecutorService executorService = Executors.newFixedThreadPool(1);
 
-        EmailClient mockEmailClient = Mockito.mock(EmailClient.class);
-        RichEmailBuilder mockEmailBuilder = Mockito.mock(RichEmailBuilder.class);
-        EventBusManager eventBusManager = new EventBusManager(new AsyncEventBus(Executors.newCachedThreadPool()),
-                Mockito.mock(EventIngestionClient.class));
         queryExecutor = new SimpleQueryExecutor(analyticsLoader, executorService,
                 ImmutableList.of(new ResponseCacheUpdater(cacheManager),
                         new SlowQueryReporter(new QueryConfig())));
@@ -171,6 +162,7 @@ public abstract class ActionTest {
         hazelcastInstance.shutdown();
         ElasticsearchTestUtils.cleanupIndices(elasticsearchConnection);
         elasticsearchConnection.stop();
+
     }
 
     @Before

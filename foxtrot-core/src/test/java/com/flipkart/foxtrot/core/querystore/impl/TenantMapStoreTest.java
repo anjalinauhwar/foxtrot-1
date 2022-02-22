@@ -50,7 +50,7 @@ public class TenantMapStoreTest {
     public static final String TENANT_META_INDEX = "tenant-meta";
     public static final String TENANT_META_TYPE = "tenant-meta";
     private static ElasticsearchConnection elasticsearchConnection;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private TenantMapStore tenantMapStore;
 
 
