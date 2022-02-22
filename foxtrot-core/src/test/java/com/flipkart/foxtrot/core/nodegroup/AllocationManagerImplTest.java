@@ -63,7 +63,7 @@ public class AllocationManagerImplTest {
     @Test
     public void shouldCreateAllocationTemplate() throws IOException {
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("prd-esfoxtrot1*");
+        nodePatterns1.add("elaticsearch1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
         tables1.add("test_consumer_app_android");
@@ -117,7 +117,7 @@ public class AllocationManagerImplTest {
     public void shouldDeleteAllocationTemplate() throws IOException {
         exception.expect(ElasticsearchStatusException.class);
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("prd-esfoxtrot1*");
+        nodePatterns1.add("elaticsearch1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
         tables1.add("test_consumer_app_android");
@@ -151,8 +151,8 @@ public class AllocationManagerImplTest {
     @Test
     public void shouldUpdateAllocationSettingsForIndex() throws IOException {
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("prd-esfoxtrot1*");
-        nodePatterns1.add("prd-esfoxtrot2*");
+        nodePatterns1.add("elaticsearch1*");
+        nodePatterns1.add("elaticsearch2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
         tables1.add("test_consumer_app_android");
@@ -174,7 +174,7 @@ public class AllocationManagerImplTest {
         GetSettingsResponse settingsResponse = elasticsearchConnection.getClient()
                 .indices()
                 .getSettings(getSettingsRequest, RequestOptions.DEFAULT);
-        Assert.assertEquals("prd-esfoxtrot1*,prd-esfoxtrot2*",
+        Assert.assertEquals("elaticsearch1*,elaticsearch2*",
                 settingsResponse.getSetting(TEST_INDEX, "index.routing.allocation.include._name"));
 
     }

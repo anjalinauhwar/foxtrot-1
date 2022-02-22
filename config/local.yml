@@ -9,7 +9,7 @@ server:
 elasticsearch:
   hosts:
   - localhost
-  cluster: stg-es4xx
+  cluster: foxtrot
   tableNamePrefix: foxtrot
   getQueryTimeout: 10000
   port: 9200
@@ -17,7 +17,7 @@ elasticsearch:
 serviceDiscovery:
   namespace: local
   environment: local
-  zookeeper: stg-appzkobserver001.text.nmx:2181
+  zookeeper: zk.text.nmx:2181
   publishedHost: 127.0.0.1
   publishedPort: 8080
 
@@ -44,7 +44,7 @@ logging:
   level: INFO
 
 restrictedTables:
-  - visana
+  - test
 
 cardinality:
   enabled: true
@@ -83,11 +83,11 @@ clusterRerouteConfig:
   thresholdShardCountPercentage: 10
 
 emailConfig:
-  from: noreply@test.com
-  host: ops-jump001.test.nm5
+  from: test@email.com
+  host: email.test.com
   port: 25
-  user: AKIAJLCWHAOEDK4ZDOGQ
-  password: AgjCxNI68hrnj6bIzuJCiZBlDXW+TioRoU11++Yx97
+  user: test
+  password: test
   url: /
 
 restrictAccess: false
