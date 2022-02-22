@@ -205,21 +205,21 @@ public class DocumentTranslatorTest {
         translatorConfig.setRawKeyVersion("2.0");
         translatorConfig.setUnmarshallerConfig(UnmarshallerConfig.builder()
                 .unmarshallingEnabled(true)
-                .tableVsUnmarshallJsonPath(ImmutableMap.of("phonepe_consumer_app_android_new", Arrays.asList(
+                .tableVsUnmarshallJsonPath(ImmutableMap.of("test_consumer_app_android_new", Arrays.asList(
                         new String[]{"/eventData/funnelInfo", "/eventData/funnelInfoData/funnelInfos/funnelIds"})))
                 .build());
 
         DocumentTranslator documentTranslator = new DocumentTranslator(translatorConfig);
 
         Table table = Table.builder()
-                .name("phonepe_consumer_app_android_new")
+                .name("test_consumer_app_android_new")
                 .build();
 
         Document document = new Document();
         document.setDate(new Date());
         document.setId(UUID.randomUUID()
                 .toString());
-        String eventJson = "{\n" + "  \"app\": \"phonepe_consumer_app_android_new\",\n" + "  \"eventData\": {\n"
+        String eventJson = "{\n" + "  \"app\": \"test_consumer_app_android_new\",\n" + "  \"eventData\": {\n"
                 + "    \"value\": 0,\n" + "    \"category\": \"SYNC_MANAGER\",\n"
                 + "    \"flowType_id\": \"c42e1be6-b72e-4d40-91f7-cd31b7f34ccb\",\n"
                 + "    \"mobileDataType\": \"4G\",\n" + "    \"eventId\": \"SYNC_MANAGER_SYSTEM_REGISTRATION\",\n"
@@ -245,7 +245,7 @@ public class DocumentTranslatorTest {
         Assert.assertTrue(translatedDocument.getData()
                 .at("/eventData/funnelInfo")
                 .isArray());
-        eventJson = "{\n" + "  \"app\": \"phonepe_consumer_app_android_new\",\n" + "  \"eventData\": {\n"
+        eventJson = "{\n" + "  \"app\": \"test_consumer_app_android_new\",\n" + "  \"eventData\": {\n"
                 + "    \"value\": 0,\n" + "    \"category\": \"SYNC_MANAGER\",\n"
                 + "    \"flowType_id\": \"c42e1be6-b72e-4d40-91f7-cd31b7f34ccb\",\n"
                 + "    \"mobileDataType\": \"4G\",\n" + "    \"eventId\": \"SYNC_MANAGER_SYSTEM_REGISTRATION\",\n"
@@ -291,7 +291,7 @@ public class DocumentTranslatorTest {
         translatorConfig.setRawKeyVersion("2.0");
         translatorConfig.setUnmarshallerConfig(UnmarshallerConfig.builder()
                 .unmarshallingEnabled(true)
-                .tableVsUnmarshallJsonPath(ImmutableMap.of("phonepe_consumer_app_android_new", Arrays.asList(
+                .tableVsUnmarshallJsonPath(ImmutableMap.of("test_consumer_app_android_new", Arrays.asList(
                         new String[]{"/eventData/funnelInfo", "/eventData/funnelInfoData/funnelInfos/funnelIds"})))
                 .build());
 
@@ -327,7 +327,7 @@ public class DocumentTranslatorTest {
         translatorConfig.setRawKeyVersion("2.0");
         translatorConfig.setUnmarshallerConfig(UnmarshallerConfig.builder()
                 .unmarshallingEnabled(true)
-                .tableVsUnmarshallJsonPath(ImmutableMap.of("phonepe_consumer_app_android_new", Arrays.asList(
+                .tableVsUnmarshallJsonPath(ImmutableMap.of("test_consumer_app_android_new", Arrays.asList(
                         new String[]{"/eventData/funnelInfo", "/eventData/funnelInfoData/funnelInfos/funnelIds"})))
                 .build());
 

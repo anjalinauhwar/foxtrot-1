@@ -17,27 +17,9 @@ elasticsearch:
 serviceDiscovery:
   namespace: local
   environment: local
-  zookeeper: stg-appzkobserver001.phonepe.nb6:2181
+  zookeeper: stg-appzkobserver001.text.nmx:2181
   publishedHost: 127.0.0.1
   publishedPort: 8080
-
-reporterConfig:
-  prefix: phonepe.stg.foxtrot
-  pollingInterval: 30
-  attributes:
-  cluster: echosystem-riemann
-  metricServiceConfig:
-    namespace: phonepe
-    logLevel: BASIC
-    zookeeper: stg-appzkobserver001.phonepe.nb6:2181
-    httpConfiguration:
-      usingZookeeper: true
-      host: metricingestion.traefik.stg.phonepe.nb6
-      serviceName: metricingestion
-      environment: stage
-      connections: 10
-      idleTimeOutSeconds: 30
-  dc: NB6
 
 hbase:
   secure: false
@@ -101,51 +83,14 @@ clusterRerouteConfig:
   thresholdShardCountPercentage: 10
 
 emailConfig:
-  from: noreply@phonepe.com
-  host: ops-jump001.phonepe.nm1
+  from: noreply@test.com
+  host: ops-jump001.test.nm5
   port: 25
   user: AKIAJLCWHAOEDK4ZDOGQ
   password: AgjCxNI68hrnj6bIzuJCiZBlDXW+TioRoU11++Yx97
   url: /
 
-gandalfConfig:
-  httpConfig:
-    usingZookeeper: false
-    host: gandalf.traefik.stg.phonepe.nb6
-    port: 80
-    serviceName: gandalf
-    environment: stage
-    connections: 10
-    idleTimeOutSeconds: 30
-  authConfig:
-    clientId: echo
-    clientKey:  1234
-    namespace:  echo
-  permissionCacheConfig:
-    ttlSeconds: 900
-    enabled: true
-
-primerBundleConfiguration:
-  enabled: false
-  authTypesEnabled:
-    CONFIG: false
-    ANNOTATION: true
-  endpoint:
-    type: simple
-    host: primer.traefik.stg.phonepe.com
-    port: 80
-  cacheExpiry: 60
-  cacheMaxSize: 100000
-  clockSkew: 60
-  prefix: Bearer
-  privateKey: TwhjV5ujkvb41frpmqCve7ZfhqwSDMqOXe01DeDIsb2xCrW4bwfFnax9bi2uC9Kn
-
 restrictAccess: false
-
-gandalfConfiguration:
-  serviceBaseUrl: "localhost:17000"
-  username: "mudit.g@phonepe.com"
-  password: "gandalf@echo"
 
 swagger:
   resourcePackage: com.flipkart.foxtrot.server.resources
@@ -158,21 +103,10 @@ distributedLockConfig:
     FUNNEL_APPROVAL:
       lockExpiryTimeInMs: 2000
 
-eventIngestorConfig:
-  usingZookeeper: false
-  clientId: foxtrot
-  host: events.traefik.stg.phonepe.nb6
-  port: 80
-  environment: stage
-  serviceName: dp-ingestion-api
-  namespace: phonepe
-  clientType: sync
-  queuePath: /var/tmp
-
 funnelConfiguration:
   querySize: 100
   funnelIndex: foxtrot_funnel
-  funnelConsoleUrl: http://siphon-ui.traefik.stg.phonepe.com/#/
+  funnelConsoleUrl: http://siphon-ui.traefik.stg.test.com/#/
   defaultVersionCodeFilter:
     operator: greater_equal
     field: eventData.versionCode
@@ -233,7 +167,7 @@ funnelConfiguration:
 eventIngestorConfig:
   usingZookeeper: true
   clientId: foxtrot
-  host: events.traefik.stg.phonepe.nb6
+  host: events.traefik.stg.test.nmx
   port: 80
   environment: stage
   serviceName: dp-ingestion-api

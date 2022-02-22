@@ -36,7 +36,7 @@ import org.junit.rules.ExpectedException;
 
 public class AllocationManagerImplTest {
 
-    private static final String TEST_INDEX = "foxtrot-phonepe_consumer_app_android-table-10-8-2021";
+    private static final String TEST_INDEX = "foxtrot-test_consumer_app_android-table-10-8-2021";
     private static ElasticsearchConnection elasticsearchConnection;
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -66,11 +66,11 @@ public class AllocationManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
         tables1.add("flipcast");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -120,7 +120,7 @@ public class AllocationManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
         tables1.add("flipcast");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
@@ -155,11 +155,11 @@ public class AllocationManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
         tables1.add("flipcast");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>Foxtrot</name>
-    <description>
-        Foxtrot is a scalable data and query store service for for real-time event data.
-    </description>
+    <description>Foxtrot is a scalable data and query store service for for real-time event data.</description>
     <url>https://git@github.com/flipkart-incubator/foxtrot</url>
 
     <groupId>com.flipkart.foxtrot</groupId>
@@ -13,15 +13,9 @@
     <packaging>pom</packaging>
     <version>6.8.8-1</version>
 
-    <parent>
-        <groupId>com.phonepe</groupId>
-        <artifactId>pp-parent-pom</artifactId>
-        <version>0.28</version>
-    </parent>
     <scm>
         <connection>scm:git:https://github.com/flipkart-incubator/foxtrot.git</connection>
-        <developerConnection>scm:git:https://github.com/flipkart-incubator/foxtrot.git
-        </developerConnection>
+        <developerConnection>scm:git:https://github.com/flipkart-incubator/foxtrot.git</developerConnection>
         <tag>HEAD</tag>
         <url>https://github.com/flipkart-incubator/foxtrot</url>
     </scm>
@@ -58,17 +52,6 @@
         </developer>
     </developers>
 
-    <distributionManagement>
-        <repository>
-            <id>phonepe-releases</id>
-            <url>http://artifactory.phonepe.com/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>phonepe-snapshots</id>
-            <url>http://artifactory.phonepe.com/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <properties>
         <caffeine.version>2.6.2</caffeine.version>
         <dropwizard.guicey.version>4.2.1</dropwizard.guicey.version>
@@ -92,170 +75,6 @@
         <function.metrics.version>1.0.6</function.metrics.version>
         <jdk.version>1.8</jdk.version>
         <hazelcast.version>4.0.5</hazelcast.version>
-        <sonar.coverage.exclusions>
-            **com/flipkart/foxtrot/server/console/*,
-            **com/flipkart/foxtrot/server/di/**,
-            **com/flipkart/foxtrot/server/healthcheck/**,
-            **com/flipkart/foxtrot/server/utils/**,
-            **com/flipkart/foxtrot/server/utils/response/**,
-            **com/flipkart/foxtrot/server/providers/exception/**,
-            **com/flipkart/foxtrot/server/resources/UtilResource.java,
-            **com/flipkart/foxtrot/server/resources/HbaseRegionsMergeResource.java,
-            **com/flipkart/foxtrot/server/resources/FqlV2Resource.java,
-            **com/flipkart/foxtrot/server/resources/QueryManagerResource.java,
-            **com/flipkart/foxtrot/server/resources/FqlResource.java,
-            **com/flipkart/foxtrot/server/resources/ESClusterResource.java,
-            **com/flipkart/foxtrot/server/resources/ConsoleV2Resource.java,
-            **com/flipkart/foxtrot/server/resources/ConsoleResource.java,
-            **com/flipkart/foxtrot/server/resources/ClusterInfoResource.java,
-            **com/flipkart/foxtrot/server/resources/IndexMetadataResource.java,
-            **com/flipkart/foxtrot/server/cluster/**,
-            **com/flipkart/foxtrot/server/App.java,
-            **com/flipkart/foxtrot/server/FoxtrotServer.java,
-            **com/flipkart/foxtrot/server/InitializerCommand.java,
-            **com/flipkart/foxtrot/server/jobs/consolehistory/**,
-            **com/flipkart/foxtrot/server/config/FoxtrotServerConfiguration.java,
-            **com/flipkart/foxtrot/core/common/DataDeletionManager.java,
-            **com/flipkart/foxtrot/core/common/DataDeletionTask.java,
-            **com/flipkart/foxtrot/core/common/DataDeletionManagerConfig.java,
-            **/com/flipkart/foxtrot/core/common/AsyncDataToken.java,
-            **com/flipkart/foxtrot/core/jobs/**/*,
-            **com/flipkart/foxtrot/core/reroute/**,
-            **com/flipkart/foxtrot/core/funnel/**/*,
-            **com/flipkart/foxtrot/core/lock/**,
-            **com/flipkart/foxtrot/core/lock/HazelcastDistributedLock.java,
-            **com/flipkart/foxtrot/core/querystore/impl/AwsClusterDiscoveryConfig.java,
-            **com/flipkart/foxtrot/core/querystore/impl/ClusterConfig.java,
-            **com/flipkart/foxtrot/core/querystore/impl/ClusterDiscoveryConfig.java,
-            **com/flipkart/foxtrot/core/querystore/impl/ClusterDiscoveryType.java,
-            **com/flipkart/foxtrot/core/querystore/impl/MarathonClusterDiscoveryConfig.java,
-            **com/flipkart/foxtrot/core/querystore/impl/SimpleClusterDiscoveryConfig.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/HBaseUtil.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/HbaseRegions.java,
-            **com/flipkart/foxtrot/core/querystore/actions/spi/ElasticsearchTuningConfig.java,
-            **com/flipkart/foxtrot/core/jobs/optimization/EsIndexOptimizationConfig.java,
-            **com/flipkart/foxtrot/core/config/**,
-            **com/flipkart/foxtrot/core/events/model/shardtuning/ShardCountTuningFailureEvent.java,
-            **com/flipkart/foxtrot/core/events/model/shardtuning/ShardCountTuningSkipEvent.java,
-            **com/flipkart/foxtrot/core/events/model/shardtuning/ShardCountTuningSuccessEvent.java,
-            **com/flipkart/foxtrot/core/indexmeta/model/TableIndexMetadataAttributes.java,
-            **com/flipkart/foxtrot/core/events/**/*,
-            **com/flipkart/foxtrot/core/events/EventIngestionClient.java,
-            **com/flipkart/foxtrot/core/email/EmailConfig.java,
-            **com/flipkart/foxtrot/core/email/EmailClient.java,
-            **com/flipkart/foxtrot/core/jobs/**/*,
-            **com/flipkart/foxtrot/core/jobs/BaseJobManager.java,
-            **com/flipkart/foxtrot/core/querystore/actions/Constants.java,
-            **com/flipkart/foxtrot/core/config/**,
-            **com/flipkart/foxtrot/core/cardinality/**,
-            **com/flipkart/foxtrot/core/funnel/**/*,
-            **com/flipkart/foxtrot/core/lock/**,
-            **com/flipkart/foxtrot/core/lock/HazelcastDistributedLock.java,
-            **com/flipkart/foxtrot/sql/fqlstore/FqlGetRequest.java,
-            **com/flipkart/foxtrot/sql/fqlstore/FqlStore.java,
-            **com/flipkart/foxtrot/sql/SqlElementVisitor.java,
-            **com/flipkart/foxtrot/sql/query/FqlDescribeTable.java,
-            **com/flipkart/foxtrot/sql/query/FqlShowTablesQuery.java,
-            **com/flipkart/foxtrot/sql/responseprocessors/model/**,
-            **com/google/common/base/Stopwatch.java,
-            *.js,
-            *.css,
-            **console/**/*,
-            **console/**/**/*,
-            src/main/resources/**
-        </sonar.coverage.exclusions>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.exclusions>
-            **com/flipkart/foxtrot/common/**/*,
-            **com/flipkart/foxtrot/server/console/*,
-            **com/flipkart/foxtrot/server/di/**,
-            **com/flipkart/foxtrot/core/alerts/AlertingSystemEventConsumer.java,
-            **com/flipkart/foxtrot/core/querystore/impl/AwsClusterDiscoveryConfig.java,
-            **com/flipkart/foxtrot/core/jobs/**/*,
-            **com/flipkart/foxtrot/core/querystore/actions/Constants.java,
-            **com/flipkart/foxtrot/core/config/**,
-            **com/flipkart/foxtrot/core/cardinality/**,
-            **com/flipkart/foxtrot/core/querystore/actions/**,
-            **com/flipkart/foxtrot/server/config/FoxtrotServerConfiguration.java,
-            **com/flipkart/foxtrot/server/healthcheck/**,
-            **com/flipkart/foxtrot/server/providers/**,
-            **com/flipkart/foxtrot/server/utils/**,
-            **com/flipkart/foxtrot/server/utils/response/**,
-            **com/flipkart/foxtrot/server/providers/exception/**,
-            **com/flipkart/foxtrot/server/resources/UtilResource.java,
-            **com/flipkart/foxtrot/server/resources/TableManagerV2Resource.java,
-            **com/flipkart/foxtrot/server/resources/HbaseRegionsMergeResource.java,
-            **com/flipkart/foxtrot/server/resources/QueryManagerResource.java,
-            **com/flipkart/foxtrot/server/resources/FqlV2Resource.java,
-            **com/flipkart/foxtrot/server/resources/FqlResource.java,
-            **com/flipkart/foxtrot/server/resources/ESClusterResource.java,
-            **com/flipkart/foxtrot/server/resources/ConsoleV2Resource.java,
-            **com/flipkart/foxtrot/server/resources/ConsoleResource.java,
-            **com/flipkart/foxtrot/server/resources/ClusterInfoResource.java,
-            **com/flipkart/foxtrot/server/resources/AnalyticsV2Resource.java,
-            **com/flipkart/foxtrot/server/resources/IndexMetadataResource.java,
-            **com/flipkart/foxtrot/server/cluster/ClusterMember.java,
-            **com/flipkart/foxtrot/server/App.java,
-            **com/flipkart/foxtrot/server/FoxtrotServer.java,
-            **com/flipkart/foxtrot/server/InitializerCommand.java,
-            **com/flipkart/foxtrot/server/jobs/consolehistory/**,
-            **com/flipkart/foxtrot/core/internalevents/**,
-            **com/flipkart/foxtrot/core/jobs/optimization/**,
-            **com/flipkart/foxtrot/core/reroute/ClusterRerouteConfig.java,
-            **com/flipkart/foxtrot/core/reroute/NodeInfo.java,
-            **com/flipkart/foxtrot/core/reroute/ShardInfo.java,
-            **com/flipkart/foxtrot/core/jobs/BaseJobConfig.java,
-            **com/flipkart/foxtrot/core/internalevents/events/**,
-            **com/flipkart/foxtrot/core/jobs/optimization/EsIndexOptimizationConfig.java,
-            **com/flipkart/foxtrot/core/exception/**,
-            **com/flipkart/foxtrot/core/cardinality/CardinalityConfig.java,
-            **com/flipkart/foxtrot/core/util/MetricUtil.java,
-            **com/flipkart/foxtrot/core/events/model/shardtuning/ShardCountTuningFailureEvent.java,
-            **com/flipkart/foxtrot/core/events/model/shardtuning/ShardCountTuningSkipEvent.java,
-            **com/flipkart/foxtrot/core/events/model/shardtuning/ShardCountTuningSuccessEvent.java,
-            **com/flipkart/foxtrot/core/indexmeta/model/TableIndexMetadataAttributes.java,
-            **com/flipkart/foxtrot/core/events/**/*,
-            **com/flipkart/foxtrot/core/events/EventIngestionClient.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/HbaseTableConnection.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/HBaseUtil.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/HbaseRegions.java,
-            **com/flipkart/foxtrot/core/querystore/actions/spi/ElasticsearchTuningConfig.java,
-            **com/flipkart/foxtrot/core/querystore/actions/spi/ActionMetadata.java,
-            **com/flipkart/foxtrot/core/internalevents/EventBusInitializer.java,
-            **com/flipkart/foxtrot/core/jobs/optimization/EsIndexOptimizationConfig.java,
-            **com/flipkart/foxtrot/core/reroute/ClusterRerouteConfig.java,
-            **com/flipkart/foxtrot/core/reroute/NodeInfo.java,
-            **com/flipkart/foxtrot/core/reroute/ShardInfo.java,
-            **com/flipkart/foxtrot/core/jobs/BaseJobConfig.java,
-            **com/flipkart/foxtrot/core/config/**,
-            **com/flipkart/foxtrot/core/internalevents/events/**,
-            **com/flipkart/foxtrot/core/email/EmailConfig.java,
-            **com/google/common/base/Stopwatch.java,
-            **com/flipkart/foxtrot/core/querystore/handlers/MetricRecorder.java,
-            **com/flipkart/foxtrot/core/querystore/handlers/SlowQueryReporter.java,
-            **com/flipkart/foxtrot/core/cardinality/CardinalityConfig.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/HbaseConfig.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/IdentityKeyDistributor.java,
-            **com/flipkart/foxtrot/core/datastore/impl/hbase/HbaseTableConnection.java,
-            **com/flipkart/foxtrot/core/exception/*.java,
-            **com/flipkart/foxtrot/core/common/DataDeletionManagerConfig.java,
-            **com/flipkart/foxtrot/core/querystore/actions/spi/ElasticsearchTuningConfig.java,
-            **com/flipkart/foxtrot/core/querystore/impl/AwsClusterDiscoveryConfig.java,
-            **com/flipkart/foxtrot/sql/fqlstore/FqlGetRequest.java,
-            **com/flipkart/foxtrot/sql/fqlstore/FqlStore.java,
-            **com/flipkart/foxtrot/sql/SqlElementVisitor.java,
-            **com/flipkart/foxtrot/sql/query/FqlDescribeTable.java,
-            **com/flipkart/foxtrot/sql/query/FqlShowTablesQuery.java,
-            **com/flipkart/foxtrot/sql/responseprocessors/model/**,
-            **com/flipkart/foxtrot/core/queryexecutor/QueryExecutorFactory.java,
-            **com/flipkart/foxtrot/server/resources/TableManagerResource.java
-            **/test/*
-            *.js,
-            *.css,
-            **console/**/*,
-            **console/**/**/*,
-            src/main/resources/**
-        </sonar.exclusions>
     </properties>
 
     <modules>
@@ -290,6 +109,12 @@
             <id>bintray</id>
             <name>bintray</name>
             <url>https://jcenter.bintray.com</url>
+        </repository>
+        <repository>
+            <id>snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases><enabled>false</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
         </repository>
     </repositories>
 

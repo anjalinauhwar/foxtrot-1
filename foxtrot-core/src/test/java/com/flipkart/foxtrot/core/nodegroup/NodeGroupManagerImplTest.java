@@ -73,12 +73,12 @@ import org.mockito.Mockito;
 
 public class NodeGroupManagerImplTest {
 
-    private static final List<String> DATA_NODES = Lists.newArrayList("prd-esfoxtrot100.phonepe.nm5",
-            "prd-esfoxtrot101.phonepe.nm5", "prd-esfoxtrot200.phonepe.nm5", "prd-esfoxtrot201.phonepe.nm5",
-            "prd-esfoxtrot300.phonepe.nm5", "prd-esfoxtrot301.phonepe.nm5", "prd-esfoxtrot400.phonepe.nm5",
-            "prd-esfoxtrot401.phonepe.nm5", "prd-esfoxtrot500.phonepe.nm5", "prd-esfoxtrot501.phonepe.nm5");
+    private static final List<String> DATA_NODES = Lists.newArrayList("prd-esfoxtrot100.test.nmx",
+            "prd-esfoxtrot101.test.nmx", "prd-esfoxtrot200.test.nmx", "prd-esfoxtrot201.test.nmx",
+            "prd-esfoxtrot300.test.nmx", "prd-esfoxtrot301.test.nmx", "prd-esfoxtrot400.test.nmx",
+            "prd-esfoxtrot401.test.nmx", "prd-esfoxtrot500.test.nmx", "prd-esfoxtrot501.test.nmx");
     private static final List<String> INDICES = Lists.newArrayList("foxtrot-payment-table-10-8-2021",
-            "foxtrot-phonepe_consumer_app_android-table-10-8-2021", "foxtrot-bullhorn-table-10-8-2021",
+            "foxtrot-test_consumer_app_android-table-10-8-2021", "foxtrot-bullhorn-table-10-8-2021",
             "foxtrot-hermes-table-10-8-2021", "foxtrot-mercedes-table-10-8-2021");
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -124,7 +124,7 @@ public class NodeGroupManagerImplTest {
                         .shards(1)
                         .tenantName("INFRA")
                         .build(), Table.builder()
-                        .name("phonepe_consumer_app_android")
+                        .name("test_consumer_app_android")
                         .ttl(30)
                         .columns(5000)
                         .defaultRegions(4)
@@ -157,10 +157,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -170,7 +170,7 @@ public class NodeGroupManagerImplTest {
 
         nodeGroupRepository.save(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot2*");
@@ -194,9 +194,9 @@ public class NodeGroupManagerImplTest {
         VacantESNodeGroup vacantGroup = nodeGroupRepository.getVacantGroup();
         Assert.assertNotNull(vacantGroup);
         SortedSet<String> vacantNodes = Sets.newTreeSet(
-                Lists.newArrayList("prd-esfoxtrot300.phonepe.nm5", "prd-esfoxtrot301.phonepe.nm5",
-                        "prd-esfoxtrot400.phonepe.nm5", "prd-esfoxtrot401.phonepe.nm5", "prd-esfoxtrot500.phonepe.nm5",
-                        "prd-esfoxtrot501.phonepe.nm5"));
+                Lists.newArrayList("prd-esfoxtrot300.test.nmx", "prd-esfoxtrot301.test.nmx",
+                        "prd-esfoxtrot400.test.nmx", "prd-esfoxtrot401.test.nmx", "prd-esfoxtrot500.test.nmx",
+                        "prd-esfoxtrot501.test.nmx"));
         Assert.assertEquals(vacantNodes.size(), vacantGroup.getNodePatterns()
                 .size());
 
@@ -207,7 +207,7 @@ public class NodeGroupManagerImplTest {
     public void shouldNotCreateNodeGroupWithOverlappingNodePattern() throws IOException {
         exception.expect(NodeGroupExecutionException.class);
         exception.expectMessage(Matchers.containsString(
-                "Node patterns overlapping with existing node group: phonepe_consumer_app_android"));
+                "Node patterns overlapping with existing node group: test_consumer_app_android"));
 
         setupNodeFSDetailsMock();
 
@@ -216,10 +216,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -229,7 +229,7 @@ public class NodeGroupManagerImplTest {
 
         nodeGroupRepository.save(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot201*");
@@ -254,7 +254,7 @@ public class NodeGroupManagerImplTest {
     public void shouldNotCreateNodeGroupWithOverlappingTables() throws IOException {
         exception.expect(NodeGroupExecutionException.class);
         exception.expectMessage(Matchers.containsString(
-                "Table allocation overlapping with existing node group: phonepe_consumer_app_android"));
+                "Table allocation overlapping with existing node group: test_consumer_app_android"));
 
         setupNodeFSDetailsMock();
 
@@ -263,11 +263,11 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
         tables1.add("payment");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -277,7 +277,7 @@ public class NodeGroupManagerImplTest {
 
         nodeGroupRepository.save(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot3*");
@@ -307,10 +307,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -332,10 +332,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -345,7 +345,7 @@ public class NodeGroupManagerImplTest {
 
         nodeGroupRepository.save(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot2*");
@@ -367,8 +367,8 @@ public class NodeGroupManagerImplTest {
         VacantESNodeGroup vacantGroup = nodeGroupRepository.getVacantGroup();
         Assert.assertNotNull(vacantGroup);
         SortedSet<String> vacantNodes = Sets.newTreeSet(
-                Lists.newArrayList("prd-esfoxtrot400.phonepe.nm5", "prd-esfoxtrot401.phonepe.nm5",
-                        "prd-esfoxtrot500.phonepe.nm5", "prd-esfoxtrot501.phonepe.nm5"));
+                Lists.newArrayList("prd-esfoxtrot400.test.nmx", "prd-esfoxtrot401.test.nmx",
+                        "prd-esfoxtrot500.test.nmx", "prd-esfoxtrot501.test.nmx"));
         Assert.assertEquals(vacantNodes.size(), vacantGroup.getNodePatterns()
                 .size());
 
@@ -386,10 +386,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -399,7 +399,7 @@ public class NodeGroupManagerImplTest {
 
         nodeGroupRepository.save(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot2*");
@@ -445,10 +445,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot3*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -459,8 +459,8 @@ public class NodeGroupManagerImplTest {
         nodeGroupRepository.save(androidGroup);
 
         SortedSet<String> vacantNodes = Sets.newTreeSet(
-                Lists.newArrayList("prd-esfoxtrot400.phonepe.nm5", "prd-esfoxtrot401.phonepe.nm5",
-                        "prd-esfoxtrot500.phonepe.nm5", "prd-esfoxtrot501.phonepe.nm5"));
+                Lists.newArrayList("prd-esfoxtrot400.test.nmx", "prd-esfoxtrot401.test.nmx",
+                        "prd-esfoxtrot500.test.nmx", "prd-esfoxtrot501.test.nmx"));
 
         VacantESNodeGroup vacantESNodeGroup = VacantESNodeGroup.builder()
                 .groupName("vacant")
@@ -489,10 +489,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -502,7 +502,7 @@ public class NodeGroupManagerImplTest {
 
         nodeGroupRepository.save(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot2*");
@@ -552,7 +552,7 @@ public class NodeGroupManagerImplTest {
                 .findFirst();
         Assert.assertTrue(vacantNodeGroup.isPresent());
         SortedSet<String> vacantNodes = Sets.newTreeSet(
-                Lists.newArrayList("prd-esfoxtrot500.phonepe.nm5", "prd-esfoxtrot501.phonepe.nm5"));
+                Lists.newArrayList("prd-esfoxtrot500.test.nmx", "prd-esfoxtrot501.test.nmx"));
         Assert.assertEquals(vacantNodes.size(), vacantNodeGroup.get()
                 .getNodePatterns()
                 .size());
@@ -618,10 +618,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -631,7 +631,7 @@ public class NodeGroupManagerImplTest {
 
         nodeGroupRepository.save(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot2*");
@@ -680,7 +680,7 @@ public class NodeGroupManagerImplTest {
                 .nodeGroup(androidGroup)
                 .details(ESNodeGroupDetails.builder()
                         .nodeCount(2)
-                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot100.phonepe.nm5", DiskUsageInfo.builder()
+                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot100.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9) / 2))
@@ -688,7 +688,7 @@ public class NodeGroupManagerImplTest {
                                         .usedDiskPercentage("50.00%")
                                         .build(),
 
-                                "prd-esfoxtrot101.phonepe.nm5", DiskUsageInfo.builder()
+                                "prd-esfoxtrot101.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
@@ -713,7 +713,7 @@ public class NodeGroupManagerImplTest {
                 .nodeGroup(paymentGroup)
                 .details(ESNodeGroupDetails.builder()
                         .nodeCount(2)
-                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot200.phonepe.nm5", DiskUsageInfo.builder()
+                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot200.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9) / 2))
@@ -721,7 +721,7 @@ public class NodeGroupManagerImplTest {
                                         .usedDiskPercentage("50.00%")
                                         .build(),
 
-                                "prd-esfoxtrot201.phonepe.nm5", DiskUsageInfo.builder()
+                                "prd-esfoxtrot201.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
@@ -746,7 +746,7 @@ public class NodeGroupManagerImplTest {
                 .nodeGroup(allGroup)
                 .details(ESNodeGroupDetails.builder()
                         .nodeCount(4)
-                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot300.phonepe.nm5", DiskUsageInfo.builder()
+                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot300.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9) / 2))
@@ -754,7 +754,7 @@ public class NodeGroupManagerImplTest {
                                         .usedDiskPercentage("50.00%")
                                         .build(),
 
-                                "prd-esfoxtrot301.phonepe.nm5", DiskUsageInfo.builder()
+                                "prd-esfoxtrot301.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
@@ -762,7 +762,7 @@ public class NodeGroupManagerImplTest {
                                         .usedDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9) / 2))
                                         .usedDiskPercentage("50.00%")
-                                        .build(), "prd-esfoxtrot400.phonepe.nm5", DiskUsageInfo.builder()
+                                        .build(), "prd-esfoxtrot400.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
@@ -772,7 +772,7 @@ public class NodeGroupManagerImplTest {
                                         .usedDiskPercentage("50.00%")
                                         .build(),
 
-                                "prd-esfoxtrot401.phonepe.nm5", DiskUsageInfo.builder()
+                                "prd-esfoxtrot401.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
@@ -800,7 +800,7 @@ public class NodeGroupManagerImplTest {
                 .nodeGroup(vacantESNodeGroup)
                 .details(ESNodeGroupDetails.builder()
                         .nodeCount(2)
-                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot500.phonepe.nm5", DiskUsageInfo.builder()
+                        .nodeInfo(new TreeMap<>(ImmutableMap.of("prd-esfoxtrot500.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9) / 2))
@@ -808,7 +808,7 @@ public class NodeGroupManagerImplTest {
                                         .usedDiskPercentage("50.00%")
                                         .build(),
 
-                                "prd-esfoxtrot501.phonepe.nm5", DiskUsageInfo.builder()
+                                "prd-esfoxtrot501.test.nmx", DiskUsageInfo.builder()
                                         .totalDiskStorage(
                                                 StorageSizeUtils.humanReadableByteCountSI((long) Math.pow(10, 9)))
                                         .availableDiskStorage(
@@ -845,10 +845,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -858,7 +858,7 @@ public class NodeGroupManagerImplTest {
         setupNodeFSDetailsMock();
         nodeGroupManager.createNodeGroup(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot2*");
@@ -885,10 +885,10 @@ public class NodeGroupManagerImplTest {
         VacantESNodeGroup vacantESNodeGroup = (VacantESNodeGroup) nodeGroupManager.getNodeGroup("vacant");
 
         SortedSet<String> vacantNodes = Sets.newTreeSet(
-                Lists.newArrayList("prd-esfoxtrot200.phonepe.nm5", "prd-esfoxtrot201.phonepe.nm5",
-                        "prd-esfoxtrot300.phonepe.nm5", "prd-esfoxtrot301.phonepe.nm5", "prd-esfoxtrot400.phonepe.nm5",
-                        "prd-esfoxtrot401.phonepe.nm5", "prd-esfoxtrot500.phonepe.nm5",
-                        "prd-esfoxtrot501.phonepe.nm5"));
+                Lists.newArrayList("prd-esfoxtrot200.test.nmx", "prd-esfoxtrot201.test.nmx",
+                        "prd-esfoxtrot300.test.nmx", "prd-esfoxtrot301.test.nmx", "prd-esfoxtrot400.test.nmx",
+                        "prd-esfoxtrot401.test.nmx", "prd-esfoxtrot500.test.nmx",
+                        "prd-esfoxtrot501.test.nmx"));
 
         Assert.assertEquals(vacantNodes, vacantESNodeGroup.getNodePatterns());
     }
@@ -901,10 +901,10 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -931,12 +931,12 @@ public class NodeGroupManagerImplTest {
         androidGroup.setNodePatterns(new TreeSet<>(Lists.newArrayList("prd-esfoxtrot1*")));
         setupNodeFSDetailsMock();
         setupListIndicesMock();
-        nodeGroupManager.updateNodeGroup("phonepe_consumer_app_android", androidGroup);
+        nodeGroupManager.updateNodeGroup("test_consumer_app_android", androidGroup);
         await().pollDelay(5000, TimeUnit.MILLISECONDS)
                 .until(() -> true);
 
         Mockito.verify(allocationManager, Mockito.atLeastOnce())
-                .syncAllocationSettings(Sets.newHashSet("foxtrot-phonepe_consumer_app_android-table-10-8-2021"),
+                .syncAllocationSettings(Sets.newHashSet("foxtrot-test_consumer_app_android-table-10-8-2021"),
                         androidGroup);
 
         Mockito.verify(allocationManager, Mockito.atLeastOnce())
@@ -948,9 +948,9 @@ public class NodeGroupManagerImplTest {
         VacantESNodeGroup vacantGroup = nodeGroupRepository.getVacantGroup();
         Assert.assertNotNull(vacantGroup);
         SortedSet<String> vacantNodes = Sets.newTreeSet(
-                Lists.newArrayList("prd-esfoxtrot200.phonepe.nm5", "prd-esfoxtrot201.phonepe.nm5",
-                        "prd-esfoxtrot400.phonepe.nm5", "prd-esfoxtrot401.phonepe.nm5", "prd-esfoxtrot500.phonepe.nm5",
-                        "prd-esfoxtrot501.phonepe.nm5"));
+                Lists.newArrayList("prd-esfoxtrot200.test.nmx", "prd-esfoxtrot201.test.nmx",
+                        "prd-esfoxtrot400.test.nmx", "prd-esfoxtrot401.test.nmx", "prd-esfoxtrot500.test.nmx",
+                        "prd-esfoxtrot501.test.nmx"));
         Assert.assertEquals(vacantNodes.size(), vacantGroup.getNodePatterns()
                 .size());
 
@@ -966,11 +966,11 @@ public class NodeGroupManagerImplTest {
         nodePatterns1.add("prd-esfoxtrot2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
-        tables1.add("phonepe_consumer_app_android");
+        tables1.add("test_consumer_app_android");
         tables1.add("bullhorn");
 
         AllocatedESNodeGroup androidGroup = AllocatedESNodeGroup.builder()
-                .groupName("phonepe_consumer_app_android")
+                .groupName("test_consumer_app_android")
                 .nodePatterns(nodePatterns1)
                 .tableAllocation(SpecificTableAllocation.builder()
                         .totalShardsPerNode(4)
@@ -980,7 +980,7 @@ public class NodeGroupManagerImplTest {
         setupNodeFSDetailsMock();
         nodeGroupManager.createNodeGroup(androidGroup);
 
-        Assert.assertEquals(androidGroup, nodeGroupRepository.get("phonepe_consumer_app_android"));
+        Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
         nodePatterns2.add("prd-esfoxtrot3*");
@@ -1003,14 +1003,14 @@ public class NodeGroupManagerImplTest {
         setupNodeFSDetailsMock();
         setupListIndicesMock();
         nodeGroupManager.moveTablesBetweenGroups(MoveTablesRequest.builder()
-                .sourceGroup("phonepe_consumer_app_android")
+                .sourceGroup("test_consumer_app_android")
                 .destinationGroup("payment")
                 .tables(Lists.newArrayList("bullhorn"))
                 .build());
 
         setupNodeFSDetailsMock();
         AllocatedESNodeGroup androidGroupUpdated = (AllocatedESNodeGroup) nodeGroupManager.getNodeGroup(
-                "phonepe_consumer_app_android");
+                "test_consumer_app_android");
         Assert.assertTrue(androidGroupUpdated.getTableAllocation() instanceof SpecificTableAllocation);
 
         SpecificTableAllocation androidTableAllocation = (SpecificTableAllocation) androidGroupUpdated.getTableAllocation();
@@ -1038,7 +1038,7 @@ public class NodeGroupManagerImplTest {
     public void checkOverlappingNodePatterns() {
 
         SortedSet<String> groupATables = new TreeSet<>();
-        groupATables.add("phonepe_consumer_app_android");
+        groupATables.add("test_consumer_app_android");
         groupATables.add("pcaa_critical");
 
         SortedSet<String> groupANodePatterns = new TreeSet<>();

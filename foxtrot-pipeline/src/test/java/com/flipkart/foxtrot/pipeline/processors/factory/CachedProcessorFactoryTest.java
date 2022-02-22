@@ -1,23 +1,18 @@
 package com.flipkart.foxtrot.pipeline.processors.factory;
 
-import static org.junit.Assert.*;
-
-import com.flipkart.foxtrot.pipeline.processors.Processor;
-import com.flipkart.foxtrot.pipeline.processors.ProcessorCreationException;
-import com.flipkart.foxtrot.pipeline.processors.ProcessorDefinition;
-import com.flipkart.foxtrot.pipeline.processors.TestProcessor;
-import com.flipkart.foxtrot.pipeline.processors.TestProcessorDefinition;
+import com.flipkart.foxtrot.pipeline.processors.*;
 import com.flipkart.foxtrot.pipeline.processors.string.StringLowerProcessorDefinition;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.util.concurrent.UncheckedExecutionException;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import lombok.val;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class CachedProcessorFactoryTest {
     private AtomicInteger counterCalled;

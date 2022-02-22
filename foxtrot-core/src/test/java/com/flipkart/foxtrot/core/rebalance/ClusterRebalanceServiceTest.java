@@ -113,18 +113,18 @@ public class ClusterRebalanceServiceTest {
         List<ShardInfoResponse> shardInfoResponses = new ArrayList<>();
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot101.phonepe.nm5", 1));
+                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot101.test.nmx", 1));
         shardInfoResponses.addAll(
-                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot201.phonepe.nm5", 2));
+                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot201.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot301.phonepe.nm5", 11));
+                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot301.test.nmx", 11));
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot401.phonepe.nm5", 2));
+                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot401.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot501.phonepe.nm5", 4));
+                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot501.test.nmx", 4));
         shardInfoResponses.addAll(
-                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot601.phonepe.nm5", 40));
+                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot601.test.nmx", 40));
 
         setupWireMockGet(String.format(SHARD_STATS_ENDPOINT, ElasticsearchUtils.getTableIndexPattern()), 200,
                 JsonUtils.toJson(shardInfoResponses));
@@ -172,18 +172,18 @@ public class ClusterRebalanceServiceTest {
         List<ShardInfoResponse> shardInfoResponses = new ArrayList<>();
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot101.phonepe.nm5", 1));
+                addShardsForIndex(0, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot101.test.nmx", 1));
         shardInfoResponses.addAll(
-                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot201.phonepe.nm5", 2));
+                addShardsForIndex(1, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot201.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot301.phonepe.nm5", 11));
+                addShardsForIndex(3, "foxtrot-payment-table-04-10-2021", "prd-esfoxtrot301.test.nmx", 11));
 
         shardInfoResponses.addAll(
-                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot401.phonepe.nm5", 2));
+                addShardsForIndex(0, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot401.test.nmx", 2));
         shardInfoResponses.addAll(
-                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot501.phonepe.nm5", 4));
+                addShardsForIndex(2, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot501.test.nmx", 4));
         shardInfoResponses.addAll(
-                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot601.phonepe.nm5", 40));
+                addShardsForIndex(6, "foxtrot-nexus-table-04-10-2021", "prd-esfoxtrot601.test.nmx", 40));
 
         setupWireMockGet(String.format(SHARD_STATS_ENDPOINT, ElasticsearchUtils.getTableIndexPattern()), 200,
                 JsonUtils.toJson(shardInfoResponses));

@@ -5,7 +5,7 @@ import pprint
 import requests
 import time
 
-host = "prd-esfoxtrot601.phonepe.nm1"
+host = "prd-esfoxtrot601.test.nmx"
 
 
 def convertToGb(dataSize):

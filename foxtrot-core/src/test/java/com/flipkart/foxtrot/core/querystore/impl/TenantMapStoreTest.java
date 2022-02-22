@@ -46,7 +46,7 @@ import java.util.HashSet;
 public class TenantMapStoreTest {
 
     public static final String TEST_TENANT = "test-tenant";
-    public static final String TEST_EMAIL = "testemail@phonepe.com";
+    public static final String TEST_EMAIL = "testemail@gmail.com";
     public static final String TENANT_META_INDEX = "tenant-meta";
     public static final String TENANT_META_TYPE = "tenant-meta";
     private static ElasticsearchConnection elasticsearchConnection;

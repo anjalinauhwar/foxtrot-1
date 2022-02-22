@@ -259,7 +259,7 @@ public class ClusterRebalanceService {
                 .build();
     }
 
-    // populate a map with key = node (prd-esfoxtrotfour305.phonepe.nm5)
+    // populate a map with key = node (prd-esxx.xx.nmx)
     // and value = [{"shard": "0", "index":"foxtrot-groupon-table-06-4-2021"}]
     private Map<String, NodeInfo> createNodeInfoMap(String datePostFix) throws IOException {
         Map<String, NodeInfo> nodeNameVsNodeInfoMap = new HashMap<>();

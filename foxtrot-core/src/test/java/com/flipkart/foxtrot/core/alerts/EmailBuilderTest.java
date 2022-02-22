@@ -59,7 +59,7 @@ public class EmailBuilderTest {
         final Email email = emailBuilder.visit(error);
         Assert.assertEquals("Blocked query as it might have screwed up the cluster", email.getSubject());
         Assert.assertEquals(
-                "Blocked Query: {\"opcode\":\"group\",\"filters\":[],\"bypassCache\":false,\"userDetails\":{\"userId\":\"USER123\",\"userType\":\"USER\",\"name\":null,\"email\":\"jitendra.dhawan@phonepe.com\",\"phone\":null,\"groupName\":null,\"groupValue\":null,\"roleId\":null,\"roleName\":null,\"externalReferenceId\":null},\"requestTags\":{},\"sourceType\":\"ECHO_DASHBOARD\",\"extrapolationFlag\":false,\"table\":\"test-table\",\"uniqueCountOn\":null,\"aggregationField\":null,\"aggregationType\":null,\"nesting\":[\"os\",\"deviceId\"],\"consoleId\":\"bad console\",\"precision\":null}\n"
+                "Blocked Query: {\"opcode\":\"group\",\"filters\":[],\"bypassCache\":false,\"userDetails\":{\"userId\":\"USER123\",\"userType\":\"USER\",\"name\":null,\"email\":\"jitendra.dhawan@gmail.com\",\"phone\":null,\"groupName\":null,\"groupValue\":null,\"roleId\":null,\"roleName\":null,\"externalReferenceId\":null},\"requestTags\":{},\"sourceType\":\"ECHO_DASHBOARD\",\"extrapolationFlag\":false,\"table\":\"test-table\",\"uniqueCountOn\":null,\"aggregationField\":null,\"aggregationType\":null,\"nesting\":[\"os\",\"deviceId\"],\"consoleId\":\"bad console\",\"precision\":null}\n"
                         + "Console Id: bad console\n" + "Suspect fields: [deviceId]\n" + "Cache Key: cacheKey\n"
                         + "Probability of screwing up the cluster: 0.75\n"
                         + " Probability Calculation: {\"probability\":0.75,\"estimatedMaxDocCount\":100000,"

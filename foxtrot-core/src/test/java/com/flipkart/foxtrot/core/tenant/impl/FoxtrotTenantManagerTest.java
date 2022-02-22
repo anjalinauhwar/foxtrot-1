@@ -53,7 +53,7 @@ public class FoxtrotTenantManagerTest {
         try {
             Tenant tenant = new Tenant();
             tenant.setTenantName(null);
-            tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+            tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
             tenantManager.save(tenant);
             fail();
         } catch (FoxtrotException e) {
@@ -70,7 +70,7 @@ public class FoxtrotTenantManagerTest {
         try {
             Tenant tenant = new Tenant();
             tenant.setTenantName(" ");
-            tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+            tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
             tenantManager.save(tenant);
             fail();
         } catch (FoxtrotException e) {
@@ -118,7 +118,7 @@ public class FoxtrotTenantManagerTest {
         try {
             Tenant tenant = new Tenant();
             tenant.setTenantName("tenent");
-            tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+            tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
             tenantManager.save(tenant);
         } catch (FoxtrotException e) {
             assertEquals(ErrorCode.INVALID_REQUEST, e.getCode());
@@ -133,7 +133,7 @@ public class FoxtrotTenantManagerTest {
                 .initializeTable(any(Table.class));
         Tenant tenant = new Tenant();
         tenant.setTenantName("TENANT");
-        tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+        tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
         tenantManager.save(tenant);
         Assert.assertTrue(true);
     }
@@ -149,7 +149,7 @@ public class FoxtrotTenantManagerTest {
         try {
             Tenant tenant = new Tenant();
             tenant.setTenantName("TENANT");
-            tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+            tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
             tenantManager.save(tenant);
             fail();
         } catch (FoxtrotException e) {
@@ -165,7 +165,7 @@ public class FoxtrotTenantManagerTest {
                 .exists(anyString());
         Tenant tenant = new Tenant();
         tenant.setTenantName("TENANT");
-        tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+        tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
         tenantManager.update(tenant);
         Assert.assertTrue(true);
     }
@@ -180,7 +180,7 @@ public class FoxtrotTenantManagerTest {
         try {
             Tenant tenant = new Tenant();
             tenant.setTenantName("TENANT");
-            tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+            tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
             tenantManager.update(tenant);
             fail();
         } catch (FoxtrotException e) {
@@ -211,7 +211,7 @@ public class FoxtrotTenantManagerTest {
         try {
             Tenant tenant = new Tenant();
             tenant.setTenantName(null);
-            tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+            tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
             tenantManager.update(tenant);
             fail();
         } catch (FoxtrotException e) {
@@ -228,7 +228,7 @@ public class FoxtrotTenantManagerTest {
         try {
             Tenant tenant = new Tenant();
             tenant.setTenantName(" ");
-            tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+            tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
             tenantManager.update(tenant);
             fail();
         } catch (FoxtrotException e) {
@@ -259,13 +259,13 @@ public class FoxtrotTenantManagerTest {
                 .save(any(Tenant.class));
         Tenant tenant = new Tenant();
         tenant.setTenantName("tenant");
-        tenant.setEmailIds(new String[]{"testEmailId@phonepe.com"});
+        tenant.setEmailIds(new String[]{"testEmailId@gmail.com"});
         doReturn(tenant).when(metadataManager)
                 .get("tenant");
         Tenant getTenant = tenantManager.get("tenant");
         assertEquals("tenant", getTenant.getTenantName());
         assertEquals(1, getTenant.getEmailIds().length);
-        assertTrue(CollectionUtils.isEqualCollection(new ArrayList<>(Arrays.asList("testEmailId@phonepe.com")),
+        assertTrue(CollectionUtils.isEqualCollection(new ArrayList<>(Arrays.asList("testEmailId@gmail.com")),
                 Arrays.asList(getTenant.getEmailIds())));
     }
 
