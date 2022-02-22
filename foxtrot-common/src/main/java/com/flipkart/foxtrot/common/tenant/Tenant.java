@@ -40,7 +40,7 @@ public class Tenant implements Serializable {
 
     @ValidationMethod(message = "Invalid email id")
     boolean isValid() {
-        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@phonepe.com$", Pattern.CASE_INSENSITIVE);
+        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@(.+)$", Pattern.CASE_INSENSITIVE);
         return Arrays.stream(emailIds)
                 .allMatch(emailId -> VALID_EMAIL_ADDRESS_REGEX.matcher(emailId)
                         .matches());
