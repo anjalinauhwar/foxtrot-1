@@ -73,10 +73,10 @@ import org.mockito.Mockito;
 
 public class NodeGroupManagerImplTest {
 
-    private static final List<String> DATA_NODES = Lists.newArrayList("elaticsearch100.test.com",
-            "elaticsearch101.test.com", "elaticsearch200.test.com", "elaticsearch201.test.com",
-            "elaticsearch300.test.com", "elaticsearch301.test.com", "elaticsearch400.test.com",
-            "elaticsearch401.test.com", "elaticsearch500.test.com", "elaticsearch501.test.com");
+    private static final List<String> DATA_NODES = Lists.newArrayList("elasticsearch100.test.com",
+            "elasticsearch101.test.com", "elasticsearch200.test.com", "elasticsearch201.test.com",
+            "elasticsearch300.test.com", "elasticsearch301.test.com", "elasticsearch400.test.com",
+            "elasticsearch401.test.com", "elasticsearch500.test.com", "elasticsearch501.test.com");
     private static final List<String> INDICES = Lists.newArrayList("foxtrot-payment-table-10-8-2021",
             "foxtrot-test_consumer_app_android-table-10-8-2021", "foxtrot-bullhorn-table-10-8-2021",
             "foxtrot-hermes-table-10-8-2021", "foxtrot-mercedes-table-10-8-2021");
@@ -154,7 +154,7 @@ public class NodeGroupManagerImplTest {
         setupNodeFSDetailsMock();
 
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("elaticsearch1*");
+        nodePatterns1.add("elasticsearch1*");
 
         SortedSet<String> tables1 = new TreeSet<>();
         tables1.add("test_consumer_app_android");
@@ -173,7 +173,7 @@ public class NodeGroupManagerImplTest {
         Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
-        nodePatterns2.add("elaticsearch2*");
+        nodePatterns2.add("elasticsearch2*");
 
         SortedSet<String> tables2 = new TreeSet<>();
         tables2.add("payment");
@@ -194,9 +194,9 @@ public class NodeGroupManagerImplTest {
         VacantESNodeGroup vacantGroup = nodeGroupRepository.getVacantGroup();
         Assert.assertNotNull(vacantGroup);
         SortedSet<String> vacantNodes = Sets.newTreeSet(
-                Lists.newArrayList("elaticsearch300.test.com", "elaticsearch301.test.com",
-                        "elaticsearch400.test.com", "elaticsearch401.test.com", "elaticsearch500.test.com",
-                        "elaticsearch501.test.com"));
+                Lists.newArrayList("elasticsearch300.test.com", "elasticsearch301.test.com",
+                        "elasticsearch400.test.com", "elasticsearch401.test.com", "elasticsearch500.test.com",
+                        "elasticsearch501.test.com"));
         Assert.assertEquals(vacantNodes.size(), vacantGroup.getNodePatterns()
                 .size());
 
@@ -212,8 +212,8 @@ public class NodeGroupManagerImplTest {
         setupNodeFSDetailsMock();
 
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("elaticsearch1*");
-        nodePatterns1.add("elaticsearch2*");
+        nodePatterns1.add("elasticsearch1*");
+        nodePatterns1.add("elasticsearch2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
         tables1.add("test_consumer_app_android");
@@ -232,7 +232,7 @@ public class NodeGroupManagerImplTest {
         Assert.assertEquals(androidGroup, nodeGroupRepository.get("test_consumer_app_android"));
 
         SortedSet<String> nodePatterns2 = new TreeSet<>();
-        nodePatterns2.add("elaticsearch201*");
+        nodePatterns2.add("elasticsearch201*");
 
         SortedSet<String> tables2 = new TreeSet<>();
         tables2.add("payment");

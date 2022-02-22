@@ -168,7 +168,7 @@ public class NodeGroupManagerImpl implements NodeGroupManager {
 
     /*
         1. Make node patterns in a node group more specific
-           ("elaticsearch6*" can be updated to --> "elaticsearch62*","elaticsearch61*","elaticsearch63*","elaticsearch64*","elaticsearch65*")
+           ("elasticsearch6*" can be updated to --> "elasticsearch62*","elasticsearch61*","elasticsearch63*","elasticsearch64*","elasticsearch65*")
         2. Remove node patterns from node group (removed nodes will go to vacant group)
         3. Add node patterns which match nodes from vacant group
         4. Add a table in SPECIFIC allocation group which not covered by any other SPECIFIC allocation node group

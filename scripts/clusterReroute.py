@@ -5,7 +5,7 @@ import pprint
 import requests
 import time
 
-host = "elaticsearch601.test.nmx"
+host = "elasticsearch601.test.nmx"
 
 
 def convertToGb(dataSize):

@@ -63,8 +63,8 @@ public class NodeGroupRepositoryImplTest {
     @Test
     public void shouldSaveNodeGroup() {
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("elaticsearch1*");
-        nodePatterns1.add("elaticsearch2*");
+        nodePatterns1.add("elasticsearch1*");
+        nodePatterns1.add("elasticsearch2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
         tables1.add("test_consumer_app_android");
@@ -91,8 +91,8 @@ public class NodeGroupRepositoryImplTest {
     @Test
     public void shouldGetVacantNodeGroup() {
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("elaticsearch100.test.nmx");
-        nodePatterns1.add("elaticsearch101.test.nmx");
+        nodePatterns1.add("elasticsearch100.test.nmx");
+        nodePatterns1.add("elasticsearch101.test.nmx");
 
         VacantESNodeGroup vacantESNodeGroup = VacantESNodeGroup.builder()
                 .groupName("vacant_test")
@@ -108,8 +108,8 @@ public class NodeGroupRepositoryImplTest {
     @Test
     public void shouldDeleteNodeGroup() {
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("elaticsearch1*");
-        nodePatterns1.add("elaticsearch2*");
+        nodePatterns1.add("elasticsearch1*");
+        nodePatterns1.add("elasticsearch2*");
 
         SortedSet<String> tables1 = new TreeSet<>();
         tables1.add("test_consumer_app_android");
@@ -137,8 +137,8 @@ public class NodeGroupRepositoryImplTest {
     @Test
     public void shouldGetCommonNodeGroup() {
         SortedSet<String> nodePatterns1 = new TreeSet<>();
-        nodePatterns1.add("elaticsearch100.test.nmx");
-        nodePatterns1.add("elaticsearch101.test.nmx");
+        nodePatterns1.add("elasticsearch100.test.nmx");
+        nodePatterns1.add("elasticsearch101.test.nmx");
 
         AllocatedESNodeGroup commonGroup = AllocatedESNodeGroup.builder()
                 .groupName("common")
