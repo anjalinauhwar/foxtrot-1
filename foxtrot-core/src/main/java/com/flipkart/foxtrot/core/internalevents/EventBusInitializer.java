@@ -1,10 +1,11 @@
 package com.flipkart.foxtrot.core.internalevents;
 
 import io.dropwizard.lifecycle.Managed;
-import ru.vyarus.dropwizard.guice.module.installer.order.Order;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import ru.vyarus.dropwizard.guice.module.installer.order.Order;
 
 /**
  *
@@ -17,9 +18,8 @@ public class EventBusInitializer implements Managed {
     private final InternalEventBusConsumer eventBusConsumer;
 
     @Inject
-    public EventBusInitializer(
-            InternalEventBus eventBus,
-            InternalEventBusConsumer eventBusConsumer) {
+    public EventBusInitializer(InternalEventBus eventBus,
+                               InternalEventBusConsumer eventBusConsumer) {
         this.eventBus = eventBus;
         this.eventBusConsumer = eventBusConsumer;
     }
@@ -31,6 +31,6 @@ public class EventBusInitializer implements Managed {
 
     @Override
     public void stop() throws Exception {
-
+        // do nothing
     }
 }

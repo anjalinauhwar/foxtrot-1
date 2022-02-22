@@ -3,9 +3,10 @@ package com.flipkart.foxtrot.common.stats;
 import com.flipkart.foxtrot.common.ActionResponse;
 import com.flipkart.foxtrot.common.Opcodes;
 import com.flipkart.foxtrot.common.ResponseVisitor;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Created by rishabh.goyal on 07/08/14.
@@ -42,8 +43,8 @@ public class StatsResponse extends ActionResponse {
     }
 
     @Override
-    public void accept(ResponseVisitor visitor) {
-        visitor.visit(this);
+    public <T> T accept(ResponseVisitor<T> visitor) {
+        return visitor.visit(this);
     }
 
     @Override

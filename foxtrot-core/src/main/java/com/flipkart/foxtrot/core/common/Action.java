@@ -20,26 +20,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.foxtrot.common.ActionRequest;
 import com.flipkart.foxtrot.common.ActionResponse;
 import com.flipkart.foxtrot.common.ActionValidationResponse;
+import com.flipkart.foxtrot.common.exception.FoxtrotExceptions;
+import com.flipkart.foxtrot.common.exception.MalformedQueryException;
+import com.flipkart.foxtrot.common.query.CacheKeyVisitor;
 import com.flipkart.foxtrot.common.query.Filter;
 import com.flipkart.foxtrot.common.query.general.AnyFilter;
 import com.flipkart.foxtrot.common.query.numeric.LessThanFilter;
 import com.flipkart.foxtrot.common.util.CollectionUtils;
-import com.flipkart.foxtrot.core.cache.CacheManager;
-import com.flipkart.foxtrot.core.exception.FoxtrotExceptions;
-import com.flipkart.foxtrot.core.exception.MalformedQueryException;
+import com.flipkart.foxtrot.core.cardinality.CardinalityValidator;
 import com.flipkart.foxtrot.core.querystore.QueryStore;
 import com.flipkart.foxtrot.core.querystore.actions.spi.AnalyticsLoader;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchConfig;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchConnection;
 import com.flipkart.foxtrot.core.table.TableMetadataManager;
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User: Santanu Sinha (santanu.sinha@flipkart.com)
@@ -47,21 +49,25 @@ import java.util.Set;
  * Time: 12:23 AM
  */
 public abstract class Action<P extends ActionRequest> {
+
     private static final Logger logger = LoggerFactory.getLogger(Action.class.getSimpleName());
     private final TableMetadataManager tableMetadataManager;
     private final QueryStore queryStore;
-    private final CacheManager cacheManager;
     private final ObjectMapper objectMapper;
     private P parameter;
     private ElasticsearchConnection connection;
+    private CacheKeyVisitor cacheKeyVisitor;
+    private CardinalityValidator cardinalityValidator;
 
-    protected Action(P parameter, AnalyticsLoader analyticsLoader) {
+    protected Action(P parameter,
+                     AnalyticsLoader analyticsLoader) {
         this.parameter = parameter;
         this.tableMetadataManager = analyticsLoader.getTableMetadataManager();
         this.queryStore = analyticsLoader.getQueryStore();
-        this.cacheManager = analyticsLoader.getCacheManager();
         this.connection = analyticsLoader.getElasticsearchConnection();
         this.objectMapper = analyticsLoader.getObjectMapper();
+        this.cacheKeyVisitor = new CacheKeyVisitor();
+        this.cardinalityValidator = analyticsLoader.getCardinalityValidator();
     }
 
     public String cacheKey() {
@@ -142,9 +148,11 @@ public abstract class Action<P extends ActionRequest> {
 
     public abstract String getRequestCacheKey();
 
-    public abstract org.elasticsearch.action.ActionRequest getRequestBuilder(P parameter, List<Filter> extraFilters);
+    public abstract org.elasticsearch.action.ActionRequest getRequestBuilder(P parameter,
+                                                                             List<Filter> extraFilters);
 
-    public abstract ActionResponse getResponse(org.elasticsearch.action.ActionResponse response, P parameter);
+    public abstract ActionResponse getResponse(org.elasticsearch.action.ActionResponse response,
+                                               P parameter);
 
 
     public abstract void validateImpl(P parameter);
@@ -163,12 +171,20 @@ public abstract class Action<P extends ActionRequest> {
         return tableMetadataManager;
     }
 
+    public CardinalityValidator getCardinalityValidator() {
+        return cardinalityValidator;
+    }
+
     public QueryStore getQueryStore() {
         return queryStore;
     }
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    public CacheKeyVisitor getCacheKeyVisitor() {
+        return cacheKeyVisitor;
     }
 
     protected Filter getDefaultTimeSpan() {
@@ -179,7 +195,7 @@ public abstract class Action<P extends ActionRequest> {
         return lessThanFilter;
     }
 
-    protected String requestString() {
+    public String requestString() {
         try {
             return objectMapper.writeValueAsString(parameter);
         } catch (JsonProcessingException e) {

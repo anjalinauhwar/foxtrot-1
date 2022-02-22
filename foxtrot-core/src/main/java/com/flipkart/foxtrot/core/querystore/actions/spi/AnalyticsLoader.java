@@ -18,32 +18,33 @@ package com.flipkart.foxtrot.core.querystore.actions.spi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.flipkart.foxtrot.common.ActionRequest;
+import com.flipkart.foxtrot.common.exception.AnalyticsActionLoaderException;
+import com.flipkart.foxtrot.common.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.core.cache.CacheManager;
+import com.flipkart.foxtrot.core.cardinality.CardinalityValidator;
 import com.flipkart.foxtrot.core.common.Action;
-import com.flipkart.foxtrot.core.config.ElasticsearchTuningConfig;
 import com.flipkart.foxtrot.core.datastore.DataStore;
-import com.flipkart.foxtrot.core.exception.AnalyticsActionLoaderException;
-import com.flipkart.foxtrot.core.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.core.querystore.QueryStore;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchConnection;
 import com.flipkart.foxtrot.core.table.TableMetadataManager;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import io.dropwizard.lifecycle.Managed;
+
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import lombok.Getter;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.vyarus.dropwizard.guice.module.installer.order.Order;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * User: Santanu Sinha (santanu.sinha@flipkart.com)
@@ -63,15 +64,20 @@ public class AnalyticsLoader implements Managed {
     private final DataStore dataStore;
     private final QueryStore queryStore;
     private final ElasticsearchConnection elasticsearchConnection;
-    private final ElasticsearchTuningConfig elasticsearchTuningConfig;
     private final CacheManager cacheManager;
     private final ObjectMapper objectMapper;
+    private final ElasticsearchTuningConfig elasticsearchTuningConfig;
+    private final CardinalityValidator cardinalityValidator;
 
     @Inject
-    public AnalyticsLoader(
-            TableMetadataManager tableMetadataManager, DataStore dataStore, QueryStore queryStore,
-            ElasticsearchConnection elasticsearchConnection, CacheManager cacheManager,
-            ObjectMapper objectMapper, ElasticsearchTuningConfig elasticsearchTuningConfig) {
+    public AnalyticsLoader(TableMetadataManager tableMetadataManager,
+                           DataStore dataStore,
+                           QueryStore queryStore,
+                           ElasticsearchConnection elasticsearchConnection,
+                           CacheManager cacheManager,
+                           ObjectMapper objectMapper,
+                           ElasticsearchTuningConfig elasticsearchTuningConfig,
+                           CardinalityValidator cardinalityValidator) {
         this.tableMetadataManager = tableMetadataManager;
         this.dataStore = dataStore;
         this.queryStore = queryStore;
@@ -79,6 +85,7 @@ public class AnalyticsLoader implements Managed {
         this.cacheManager = cacheManager;
         this.objectMapper = objectMapper;
         this.elasticsearchTuningConfig = elasticsearchTuningConfig;
+        this.cardinalityValidator = cardinalityValidator;
     }
 
     @SuppressWarnings("unchecked")
@@ -103,8 +110,10 @@ public class AnalyticsLoader implements Managed {
         return null;
     }
 
-    public void register(ActionMetadata actionMetadata, String opcode) {
-        actions.put(actionMetadata.getRequest().getCanonicalName(), actionMetadata);
+    public void register(ActionMetadata actionMetadata,
+                         String opcode) {
+        actions.put(actionMetadata.getRequest()
+                .getCanonicalName(), actionMetadata);
         if (actionMetadata.isCacheable()) {
             registerCache(opcode);
         }

@@ -15,8 +15,11 @@
  */
 package com.flipkart.foxtrot.core.querystore.actions;
 
+import static com.flipkart.foxtrot.core.util.ElasticsearchQueryUtils.QUERY_SIZE;
+
 import com.flipkart.foxtrot.common.ActionResponse;
 import com.flipkart.foxtrot.common.Period;
+import com.flipkart.foxtrot.common.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.common.query.Filter;
 import com.flipkart.foxtrot.common.query.ResultSort;
 import com.flipkart.foxtrot.common.query.datetime.LastFilter;
@@ -26,15 +29,23 @@ import com.flipkart.foxtrot.common.trend.TrendResponse;
 import com.flipkart.foxtrot.common.util.CollectionUtils;
 import com.flipkart.foxtrot.common.visitor.CountPrecisionThresholdVisitorAdapter;
 import com.flipkart.foxtrot.core.common.Action;
-import com.flipkart.foxtrot.core.config.ElasticsearchTuningConfig;
-import com.flipkart.foxtrot.core.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.core.querystore.actions.spi.AnalyticsLoader;
 import com.flipkart.foxtrot.core.querystore.actions.spi.AnalyticsProvider;
+import com.flipkart.foxtrot.core.querystore.actions.spi.ElasticsearchTuningConfig;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchUtils;
 import com.flipkart.foxtrot.core.util.ElasticsearchQueryUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.dropwizard.util.Duration;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -49,33 +60,26 @@ import org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
-import static com.flipkart.foxtrot.core.util.ElasticsearchQueryUtils.QUERY_SIZE;
-
 /**
  * User: Santanu Sinha (santanu.sinha@flipkart.com)
  * Date: 30/03/14
  * Time: 10:27 PM
  */
 @AnalyticsProvider(opcode = "trend", request = TrendRequest.class, response = TrendResponse.class, cacheable = true)
+@SuppressWarnings("squid:CallToDeprecatedMethod")
 public class TrendAction extends Action<TrendRequest> {
 
     private final ElasticsearchTuningConfig elasticsearchTuningConfig;
 
-    public TrendAction(TrendRequest parameter, AnalyticsLoader analyticsLoader) {
+    public TrendAction(TrendRequest parameter,
+                       AnalyticsLoader analyticsLoader) {
         super(parameter, analyticsLoader);
         this.elasticsearchTuningConfig = analyticsLoader.getElasticsearchTuningConfig();
     }
 
     @Override
     public void preprocess() {
-        getParameter().setTable(ElasticsearchUtils.getValidTableName(getParameter().getTable()));
+        getParameter().setTable(ElasticsearchUtils.getValidName(getParameter().getTable()));
         if (null != getParameter().getValues() && !getParameter().getValues()
                 .isEmpty()) {
             List<Object> values = (List) getParameter().getValues();
@@ -96,7 +100,7 @@ public class TrendAction extends Action<TrendRequest> {
         long filterHashKey = 0L;
         if (query.getFilters() != null) {
             for (Filter filter : query.getFilters()) {
-                filterHashKey += 31 * filter.hashCode();
+                filterHashKey += 31 * filter.accept(getCacheKeyVisitor());
             }
         }
         if (query.getValues() != null) {
@@ -110,14 +114,15 @@ public class TrendAction extends Action<TrendRequest> {
                     .hashCode();
         }
 
-
         filterHashKey += 31 * query.getPeriod()
                 .name()
                 .hashCode();
         filterHashKey += 31 * query.getTimestamp()
                 .hashCode();
-        filterHashKey += 31 * (query.getField() != null ? query.getField()
-                .hashCode() : "FIELD".hashCode());
+        filterHashKey += 31 * (query.getField() != null
+                ? query.getField()
+                .hashCode()
+                : "FIELD".hashCode());
 
         return String.format("%s-%s-%s-%d", query.getTable(), query.getField(), query.getPeriod(), filterHashKey);
     }
@@ -146,14 +151,18 @@ public class TrendAction extends Action<TrendRequest> {
         if (!CollectionUtils.isNullOrEmpty(validationErrors)) {
             throw FoxtrotExceptions.createMalformedQueryException(parameter, validationErrors);
         }
+
+        List<String> groupingFields = new ArrayList<>();
+        groupingFields.add(parameter.getField());
+        getCardinalityValidator().validateCardinality(this, parameter, parameter.getTable(), groupingFields);
+
     }
 
     @Override
     public ActionResponse execute(TrendRequest parameter) {
         SearchRequest query = getRequestBuilder(parameter, Collections.emptyList());
         try {
-            SearchResponse response = getConnection()
-                    .getClient()
+            SearchResponse response = getConnection().getClient()
                     .search(query);
             return getResponse(response, parameter);
         } catch (IOException e) {
@@ -162,11 +171,11 @@ public class TrendAction extends Action<TrendRequest> {
     }
 
     @Override
-    public SearchRequest getRequestBuilder(TrendRequest parameter, List<Filter> extraFilters) {
-        return new SearchRequest(ElasticsearchUtils.getIndices(parameter.getTable(), parameter))
-                .indicesOptions(Utils.indicesOptions())
-                .source(new SearchSourceBuilder()
-                        .size(QUERY_SIZE)
+    public SearchRequest getRequestBuilder(TrendRequest parameter,
+                                           List<Filter> extraFilters) {
+        return new SearchRequest(ElasticsearchUtils.getIndices(parameter.getTable(), parameter)).indicesOptions(
+                Utils.indicesOptions())
+                .source(new SearchSourceBuilder().size(QUERY_SIZE)
                         .timeout(new TimeValue(getGetQueryTimeout(), TimeUnit.MILLISECONDS))
                         .query(ElasticsearchQueryUtils.translateFilter(parameter, extraFilters))
                         .aggregation(buildAggregation(parameter)));
@@ -174,7 +183,8 @@ public class TrendAction extends Action<TrendRequest> {
     }
 
     @Override
-    public ActionResponse getResponse(org.elasticsearch.action.ActionResponse response, TrendRequest parameter) {
+    public ActionResponse getResponse(org.elasticsearch.action.ActionResponse response,
+                                      TrendRequest parameter) {
         Aggregations aggregations = ((SearchResponse) response).getAggregations();
         if (aggregations != null) {
             return buildResponse(parameter, aggregations);
@@ -196,17 +206,19 @@ public class TrendAction extends Action<TrendRequest> {
         DateHistogramInterval interval = Utils.getHistogramInterval(request.getPeriod());
         String field = request.getField();
 
-        DateHistogramAggregationBuilder histogramBuilder = Utils.buildDateHistogramAggregation(request.getTimestamp(), interval);
+        DateHistogramAggregationBuilder histogramBuilder = Utils.buildDateHistogramAggregation(request.getTimestamp(),
+                interval);
         if (!CollectionUtils.isNullOrEmpty(getParameter().getUniqueCountOn())) {
-            histogramBuilder.subAggregation(Utils.buildCardinalityAggregation(
-                    getParameter().getUniqueCountOn(), request.accept(new CountPrecisionThresholdVisitorAdapter(
+            histogramBuilder.subAggregation(Utils.buildCardinalityAggregation(getParameter().getUniqueCountOn(),
+                    request.accept(new CountPrecisionThresholdVisitorAdapter(
                             elasticsearchTuningConfig.getPrecisionThreshold()))));
         }
         return Utils.buildTermsAggregation(Lists.newArrayList(new ResultSort(field, ResultSort.Order.asc)),
                 Sets.newHashSet(histogramBuilder), elasticsearchTuningConfig.getAggregationSize());
     }
 
-    private TrendResponse buildResponse(TrendRequest request, Aggregations aggregations) {
+    private TrendResponse buildResponse(TrendRequest request,
+                                        Aggregations aggregations) {
         String field = request.getField();
         Map<String, List<TrendResponse.Count>> trendCounts = new TreeMap<>();
         Terms terms = aggregations.get(Utils.sanitizeFieldForAggregation(field));
@@ -220,9 +232,11 @@ public class TrendAction extends Action<TrendRequest> {
                     String uniqueCountKey = Utils.sanitizeFieldForAggregation(getParameter().getUniqueCountOn());
                     Cardinality cardinality = histogramBucket.getAggregations()
                             .get(uniqueCountKey);
-                    counts.add(new TrendResponse.Count(((DateTime) histogramBucket.getKey()).getMillis(), cardinality.getValue()));
+                    counts.add(new TrendResponse.Count(((DateTime) histogramBucket.getKey()).getMillis(),
+                            cardinality.getValue()));
                 } else {
-                    counts.add(new TrendResponse.Count(((DateTime) histogramBucket.getKey()).getMillis(), histogramBucket.getDocCount()));
+                    counts.add(new TrendResponse.Count(((DateTime) histogramBucket.getKey()).getMillis(),
+                            histogramBucket.getDocCount()));
                 }
             }
             trendCounts.put(key, counts);

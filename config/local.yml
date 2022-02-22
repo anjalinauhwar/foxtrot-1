@@ -9,19 +9,43 @@ server:
 elasticsearch:
   hosts:
   - localhost
-  cluster: foxtrot
+  cluster: stg-es4xx
   tableNamePrefix: foxtrot
   getQueryTimeout: 10000
-  connectionType: HTTP
   port: 9200
 
+serviceDiscovery:
+  namespace: local
+  environment: local
+  zookeeper: stg-appzkobserver001.phonepe.nb6:2181
+  publishedHost: 127.0.0.1
+  publishedPort: 8080
+
+reporterConfig:
+  prefix: phonepe.stg.foxtrot
+  pollingInterval: 30
+  attributes:
+  cluster: echosystem-riemann
+  metricServiceConfig:
+    namespace: phonepe
+    logLevel: BASIC
+    zookeeper: stg-appzkobserver001.phonepe.nb6:2181
+    httpConfiguration:
+      usingZookeeper: true
+      host: metricingestion.traefik.stg.phonepe.nb6
+      serviceName: metricingestion
+      environment: stage
+      connections: 10
+      idleTimeOutSeconds: 30
+  dc: NB6
+
 hbase:
-  secure : false
+  secure: false
   tableName: foxtrot
-  hbaseZookeeperQuorum: localhost:2181
+  hbaseZookeeperQuorum: 127.0.0.1:2181
   hbaseZookeeperClientPort: 2181
   seggregatedTablePrefix: foxtrot-
-  hbaseZookeeperZnodeParent: /hbase-test
+  hbaseZookeeperZnodeParent: /hbase
 
 cluster:
   name: foxtrot
@@ -37,13 +61,17 @@ cacheConfig:
 logging:
   level: INFO
 
+restrictedTables:
+  - visana
+
 cardinality:
   enabled: true
+#  retryCount: 3
   batchSize: 10
   active: true
   interval: 86400
   initialDelay: 6
-  maxCardinality: 20000
+  maxCardinality: 20
 
 elasticsearchTuningConfig:
   precisionThreshold: 500
@@ -64,8 +92,7 @@ consoleHistoryConfig:
 deletionconfig:
   active: false
   interval: 86400
-  initialdelay: 60
-
+  initialDelay: 1
 
 clusterRerouteConfig:
   active: false
@@ -73,21 +100,143 @@ clusterRerouteConfig:
   initialDelay: 10
   thresholdShardCountPercentage: 10
 
-sessionCleanupConfig:
-  active: true
-  interval: 86400
-  initialDelay: 10
+emailConfig:
+  from: noreply@phonepe.com
+  host: ops-jump001.phonepe.nm1
+  port: 25
+  user: AKIAJLCWHAOEDK4ZDOGQ
+  password: AgjCxNI68hrnj6bIzuJCiZBlDXW+TioRoU11++Yx97
+  url: /
 
-auth:
+gandalfConfig:
+  httpConfig:
+    usingZookeeper: false
+    host: gandalf.traefik.stg.phonepe.nb6
+    port: 80
+    serviceName: gandalf
+    environment: stage
+    connections: 10
+    idleTimeOutSeconds: 30
+  authConfig:
+    clientId: echo
+    clientKey:  1234
+    namespace:  echo
+  permissionCacheConfig:
+    ttlSeconds: 900
+    enabled: true
+
+primerBundleConfiguration:
   enabled: false
-  jwt:
-    issuerId: foxtrot-server
-    privateKey: ${PRIVATE_KEY}
-    sessionDuration: 15d
+  authTypesEnabled:
+    CONFIG: false
+    ANNOTATION: true
+  endpoint:
+    type: simple
+    host: primer.traefik.stg.phonepe.com
+    port: 80
+  cacheExpiry: 60
+  cacheMaxSize: 100000
+  clockSkew: 60
+  prefix: Bearer
+  privateKey: TwhjV5ujkvb41frpmqCve7ZfhqwSDMqOXe01DeDIsb2xCrW4bwfFnax9bi2uC9Kn
 
-  provider:
-    type: OAUTH_GOOGLE
-    clientId: ${GOOGLE_CLIENT_ID}
-    clientSecret: ${GOOGLE_CLIENT_SECRET}
-    server: ${GOOGLE_CALLBACK_HOST_PORT}
-    secureEndpoint: false
+restrictAccess: false
+
+gandalfConfiguration:
+  serviceBaseUrl: "localhost:17000"
+  username: "mudit.g@phonepe.com"
+  password: "gandalf@echo"
+
+swagger:
+  resourcePackage: com.flipkart.foxtrot.server.resources
+  title: Foxtrot
+  description: A store abstraction and analytics system for real-time event data.
+  uriPrefix: "/foxtrot"
+
+distributedLockConfig:
+  locksConfig:
+    FUNNEL_APPROVAL:
+      lockExpiryTimeInMs: 2000
+
+eventIngestorConfig:
+  usingZookeeper: false
+  clientId: foxtrot
+  host: events.traefik.stg.phonepe.nb6
+  port: 80
+  environment: stage
+  serviceName: dp-ingestion-api
+  namespace: phonepe
+  clientType: sync
+  queuePath: /var/tmp
+
+funnelConfiguration:
+  querySize: 100
+  funnelIndex: foxtrot_funnel
+  funnelConsoleUrl: http://siphon-ui.traefik.stg.phonepe.com/#/
+  defaultVersionCodeFilter:
+    operator: greater_equal
+    field: eventData.versionCode
+    value: 400728
+  baseFunnelEventConfig:
+    eventType: APP_LOADED
+    category: General
+  funnelDropdownConfig:
+    eventTypes:
+      - APP_LOADED
+      - REFERRAL_RECEIVED
+      - FORCE_LOGOUT
+      - RESET_DEVICE_MAPPING
+      - USER_LOGOUT
+      - INSTALL_REFERRAL
+      - P2P_SEND_TRANSACTION_TAG_SELECTED
+      - P2P_SEND_TRANSACTION_CONTACT_CHANGE_INITIATED
+      - P2P_REQUEST_TRANSACTION_INITIATED
+      - P2P_REQUEST_CONTACT_SELECTED
+      - P2P_REQUEST_TRANSACTION_TAG_SELECTED
+      - P2P_REQUEST_TRANSACTION_CONTACT_CHANGE_INITIATED
+      - P2P_SPLIT_TRANSACTION_INITIATED
+      - P2P_SPLIT_CONTACT_SELECTED
+      - P2P_SPLIT_TRANSACTION_TAG_SELECTED
+      - P2P_SPLIT_TRANSACTION_CONTACT_CHANGE_INITIATED
+      - P2P_INIT
+      - MANAGE_REMINDER_INIT
+      - WALLET_TOPUP_INIT
+      - CHECK_BALANCE_INIT
+      - P2P_CONTACT_SELECTED
+    categories:
+      - P2PSendTransaction
+      - P2P_REQUEST_TRANSACTION
+      - P2P_Split_Transaction
+      - home
+      - RechargePayment
+      - DatacardPayment
+      - Notifications
+      - P2PPayToMoneyRequest
+      - CS
+      - Invite
+      - SendMoney
+      - ManageReminders
+      - WalletTopup
+      - CHECK_BALANCE
+      - P2P
+      - PAY
+    deviceAttributes:
+      - deviceId
+      - Model
+      - OS_Version
+      - Network_Provider
+      - Manufacturer
+      - Latitude
+      - Longitude
+      - OS
+
+eventIngestorConfig:
+  usingZookeeper: true
+  clientId: foxtrot
+  host: events.traefik.stg.phonepe.nb6
+  port: 80
+  environment: stage
+  serviceName: dp-ingestion-api
+  namespace: phonepe
+  clientType: queued
+  queuePath: /var/tmp

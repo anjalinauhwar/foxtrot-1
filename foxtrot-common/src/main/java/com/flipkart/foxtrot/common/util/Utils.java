@@ -16,6 +16,10 @@ package com.flipkart.foxtrot.common.util;
  */
 
 import com.flipkart.foxtrot.common.Date;
+
+import java.util.function.Function;
+import java.util.regex.Pattern;
+
 import org.joda.time.DateTime;
 
 /***
@@ -31,4 +35,13 @@ public class Utils {
         return new Date(dateTime);
     }
 
+    public static Function<String, Pattern> wildcardRegexPattern() {
+        return pattern -> Pattern.compile(pattern.replace("*", "(.*)"));
+    }
+
+    public static double convertToDecimalPlaces(double number,
+                                                int digitPrecision) {
+        return (double) Math.round(number * Math.pow(10.0, digitPrecision)) / Math.pow(10.0, digitPrecision);
+
+    }
 }

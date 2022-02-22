@@ -16,6 +16,10 @@
 package com.flipkart.foxtrot.core.querystore.impl;
 
 import io.dropwizard.lifecycle.Managed;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -27,9 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.vyarus.dropwizard.guice.module.installer.order.Order;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 /**
  * User: Santanu Sinha (santanu.sinha@flipkart.com)
  * Date: 14/03/14
@@ -38,6 +39,7 @@ import javax.inject.Singleton;
 @Singleton
 @Order(5)
 public class ElasticsearchConnection implements Managed {
+
     private static final Logger logger = LoggerFactory.getLogger(ElasticsearchConnection.class.getSimpleName());
     @Getter
     private final ElasticsearchConfig config;
@@ -52,8 +54,12 @@ public class ElasticsearchConnection implements Managed {
     @Override
     public void start() throws Exception {
         logger.info("Starting ElasticSearch Client");
-        final int defaultPort = config.getConnectionType() == ElasticsearchConfig.ConnectionType.HTTP ? 80 : 443;
-        int port = config.getPort() == 0 ? defaultPort : config.getPort();
+        final int defaultPort = config.getConnectionType() == ElasticsearchConfig.ConnectionType.HTTP
+                ? 80
+                : 443;
+        int port = config.getPort() == null
+                ? defaultPort
+                : config.getPort();
         val hosts = config.getHosts()
                 .stream()
                 .map(host -> {
@@ -78,8 +84,7 @@ public class ElasticsearchConnection implements Managed {
 
     @SneakyThrows
     public void refresh(final String index) {
-        client
-                .indices()
+        client.indices()
                 .refresh(new RefreshRequest().indices(index));
     }
 }

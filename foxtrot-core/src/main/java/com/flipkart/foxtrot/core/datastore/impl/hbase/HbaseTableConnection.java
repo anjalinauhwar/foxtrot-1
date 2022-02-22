@@ -16,9 +16,15 @@
 package com.flipkart.foxtrot.core.datastore.impl.hbase;
 
 import com.flipkart.foxtrot.common.Table;
-import com.flipkart.foxtrot.core.exception.FoxtrotExceptions;
+import com.flipkart.foxtrot.common.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.core.util.TableUtil;
 import io.dropwizard.lifecycle.Managed;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -33,11 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.vyarus.dropwizard.guice.module.installer.order.Order;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 /**
  * User: Santanu Sinha (santanu.sinha@flipkart.com)
  * Date: 13/03/14
@@ -51,13 +52,11 @@ public class HbaseTableConnection implements Managed {
     private static final String DEFAULT_FAMILY_NAME = "d";
 
     private final HbaseConfig hbaseConfig;
-    private Configuration configuration;
     private Connection connection;
     private Admin hBaseAdmin;
 
     @Inject
-    public HbaseTableConnection(Configuration configuration, HbaseConfig hbaseConfig) {
-        this.configuration = configuration;
+    public HbaseTableConnection(HbaseConfig hbaseConfig) {
         this.hbaseConfig = hbaseConfig;
     }
 
@@ -84,11 +83,16 @@ public class HbaseTableConnection implements Managed {
         hBaseAdmin.createTable(hTableDescriptor, splits);
     }
 
-    public synchronized void updateTable(final Table table) throws IOException {
-        String tableName = TableUtil.getTableName(hbaseConfig, table);
+    public synchronized void updateTable(Table existingTable,
+                                         final Table updatedTable) throws IOException {
+        String tableName = TableUtil.getTableName(hbaseConfig, updatedTable);
 
-        HTableDescriptor hTableDescriptor = constructHTableDescriptor(table);
-        hBaseAdmin.modifyTable(TableName.valueOf(tableName), hTableDescriptor);
+        HTableDescriptor hTableDescriptorOld = constructHTableDescriptor(existingTable);
+        HTableDescriptor hTableDescriptorNew = constructHTableDescriptor(updatedTable);
+
+        if (!hTableDescriptorOld.equals(hTableDescriptorNew)) {
+            hBaseAdmin.modifyTable(TableName.valueOf(tableName), hTableDescriptorNew);
+        }
     }
 
     public String getHBaseTableName(final Table table) {

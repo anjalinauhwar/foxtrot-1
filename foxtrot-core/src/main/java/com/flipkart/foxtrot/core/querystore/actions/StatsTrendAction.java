@@ -2,21 +2,35 @@ package com.flipkart.foxtrot.core.querystore.actions;
 
 import com.flipkart.foxtrot.common.ActionResponse;
 import com.flipkart.foxtrot.common.Period;
+import com.flipkart.foxtrot.common.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.common.query.Filter;
 import com.flipkart.foxtrot.common.query.ResultSort;
 import com.flipkart.foxtrot.common.query.datetime.LastFilter;
-import com.flipkart.foxtrot.common.stats.*;
+import com.flipkart.foxtrot.common.stats.AnalyticsRequestFlags;
+import com.flipkart.foxtrot.common.stats.BucketResponse;
+import com.flipkart.foxtrot.common.stats.Stat;
+import com.flipkart.foxtrot.common.stats.StatsTrendRequest;
+import com.flipkart.foxtrot.common.stats.StatsTrendResponse;
+import com.flipkart.foxtrot.common.stats.StatsTrendValue;
 import com.flipkart.foxtrot.common.util.CollectionUtils;
 import com.flipkart.foxtrot.core.common.Action;
-import com.flipkart.foxtrot.core.config.ElasticsearchTuningConfig;
-import com.flipkart.foxtrot.core.exception.FoxtrotExceptions;
 import com.flipkart.foxtrot.core.querystore.actions.spi.AnalyticsLoader;
 import com.flipkart.foxtrot.core.querystore.actions.spi.AnalyticsProvider;
+import com.flipkart.foxtrot.core.querystore.actions.spi.ElasticsearchTuningConfig;
 import com.flipkart.foxtrot.core.querystore.impl.ElasticsearchUtils;
 import com.flipkart.foxtrot.core.util.ElasticsearchQueryUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.dropwizard.util.Duration;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
@@ -32,31 +46,25 @@ import org.elasticsearch.search.aggregations.metrics.percentiles.Percentiles;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.joda.time.DateTime;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 /**
  * Created by rishabh.goyal on 02/08/14.
  */
 
 @AnalyticsProvider(opcode = "statstrend", request = StatsTrendRequest.class, response = StatsTrendResponse.class, cacheable = false)
+@SuppressWarnings("squid:CallToDeprecatedMethod")
 public class StatsTrendAction extends Action<StatsTrendRequest> {
 
     private final ElasticsearchTuningConfig elasticsearchTuningConfig;
 
-    public StatsTrendAction(StatsTrendRequest parameter, AnalyticsLoader analyticsLoader) {
+    public StatsTrendAction(StatsTrendRequest parameter,
+                            AnalyticsLoader analyticsLoader) {
         super(parameter, analyticsLoader);
         this.elasticsearchTuningConfig = analyticsLoader.getElasticsearchTuningConfig();
     }
 
     @Override
     public void preprocess() {
-        getParameter().setTable(ElasticsearchUtils.getValidTableName(getParameter().getTable()));
+        getParameter().setTable(ElasticsearchUtils.getValidName(getParameter().getTable()));
     }
 
     @Override
@@ -70,7 +78,7 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
         long hashKey = 0L;
         if (statsRequest.getFilters() != null) {
             for (Filter filter : statsRequest.getFilters()) {
-                hashKey += 31 * filter.hashCode();
+                hashKey += 31 * filter.accept(getCacheKeyVisitor());
             }
         }
 
@@ -89,12 +97,8 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
                 ? statsRequest.getField()
                 .hashCode()
                 : "FIELD".hashCode());
-        return String.format("stats-trend-%s-%s-%s-%d",
-                statsRequest.getTable(),
-                statsRequest.getField(),
-                statsRequest.getPeriod(),
-                hashKey
-        );
+        return String.format("stats-trend-%s-%s-%s-%d", statsRequest.getTable(), statsRequest.getField(),
+                statsRequest.getPeriod(), hashKey);
     }
 
     @Override
@@ -115,14 +119,15 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
         if (!CollectionUtils.isNullOrEmpty(validationErrors)) {
             throw FoxtrotExceptions.createMalformedQueryException(parameter, validationErrors);
         }
+        getCardinalityValidator().validateCardinality(this, parameter, parameter.getTable(), parameter.getNesting());
+
     }
 
     @Override
     public ActionResponse execute(StatsTrendRequest parameter) {
         SearchRequest query = getRequestBuilder(parameter, Collections.emptyList());
         try {
-            SearchResponse response = getConnection()
-                    .getClient()
+            SearchResponse response = getConnection().getClient()
                     .search(query);
             return getResponse(response, parameter);
         } catch (IOException e) {
@@ -131,11 +136,11 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
     }
 
     @Override
-    public SearchRequest getRequestBuilder(StatsTrendRequest parameter, List<Filter> extraFilters) {
-        return new SearchRequest(ElasticsearchUtils.getIndices(parameter.getTable(), parameter))
-                .indicesOptions(Utils.indicesOptions())
-                .source(new SearchSourceBuilder()
-                        .size(0)
+    public SearchRequest getRequestBuilder(StatsTrendRequest parameter,
+                                           List<Filter> extraFilters) {
+        return new SearchRequest(ElasticsearchUtils.getIndices(parameter.getTable(), parameter)).indicesOptions(
+                Utils.indicesOptions())
+                .source(new SearchSourceBuilder().size(0)
                         .timeout(new TimeValue(getGetQueryTimeout(), TimeUnit.MILLISECONDS))
                         .query(ElasticsearchQueryUtils.translateFilter(parameter, extraFilters))
                         .aggregation(buildAggregation(parameter, parameter.getTable())));
@@ -143,7 +148,8 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
     }
 
     @Override
-    public ActionResponse getResponse(org.elasticsearch.action.ActionResponse response, StatsTrendRequest parameter) {
+    public ActionResponse getResponse(org.elasticsearch.action.ActionResponse response,
+                                      StatsTrendRequest parameter) {
         Aggregations aggregations = ((SearchResponse) response).getAggregations();
         if (aggregations != null) {
             return buildResponse(parameter, aggregations);
@@ -151,22 +157,21 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
         return null;
     }
 
-    private AbstractAggregationBuilder buildAggregation(StatsTrendRequest request, String table) {
+    private AbstractAggregationBuilder buildAggregation(StatsTrendRequest request,
+                                                        String table) {
         final String field = request.getField();
         DateHistogramInterval interval = Utils.getHistogramInterval(request.getPeriod());
         AbstractAggregationBuilder dateHistogramBuilder = Utils.buildDateHistogramAggregation(request.getTimestamp(),
                 interval);
         boolean isNumericField = Utils.isNumericField(getTableMetadataManager(), table, field);
         if (isNumericField) {
-            dateHistogramBuilder
-                    .subAggregation(Utils.buildStatsAggregation(field, getParameter().getStats()));
+            dateHistogramBuilder.subAggregation(Utils.buildStatsAggregation(field, getParameter().getStats()));
             if (!AnalyticsRequestFlags.hasFlag(request.getFlags(), AnalyticsRequestFlags.STATS_SKIP_PERCENTILES)) {
-                dateHistogramBuilder.subAggregation(Utils.buildPercentileAggregation(
-                        field, request.getPercentiles(), request.getCompression()));
+                dateHistogramBuilder.subAggregation(
+                        Utils.buildPercentileAggregation(field, request.getPercentiles(), request.getCompression()));
             }
         } else {
-            dateHistogramBuilder
-                    .subAggregation(Utils.buildStatsAggregation(field, Collections.singleton(Stat.COUNT)));
+            dateHistogramBuilder.subAggregation(Utils.buildStatsAggregation(field, Collections.singleton(Stat.COUNT)));
         }
 
         if (CollectionUtils.isNullOrEmpty(getParameter().getNesting())) {
@@ -179,7 +184,8 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
                 elasticsearchTuningConfig.getAggregationSize());
     }
 
-    private StatsTrendResponse buildResponse(StatsTrendRequest request, Aggregations aggregations) {
+    private StatsTrendResponse buildResponse(StatsTrendRequest request,
+                                             Aggregations aggregations) {
         StatsTrendResponse response = new StatsTrendResponse();
 
         if (CollectionUtils.isNullOrEmpty(request.getNesting())) {
@@ -193,9 +199,8 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
         return response;
     }
 
-    private List<BucketResponse<List<StatsTrendValue>>> buildNestedTrendStats(
-            List<String> nesting,
-            Aggregations aggregations) {
+    private List<BucketResponse<List<StatsTrendValue>>> buildNestedTrendStats(List<String> nesting,
+                                                                              Aggregations aggregations) {
         final String field = nesting.get(0);
         final List<String> remainingFields = (nesting.size() > 1)
                 ? nesting.subList(1, nesting.size())
@@ -215,7 +220,8 @@ public class StatsTrendAction extends Action<StatsTrendRequest> {
         return bucketResponses;
     }
 
-    private List<StatsTrendValue> buildStatsTrendValue(String field, Aggregations aggregations) {
+    private List<StatsTrendValue> buildStatsTrendValue(String field,
+                                                       Aggregations aggregations) {
         String dateHistogramKey = Utils.getDateHistogramKey(getParameter().getTimestamp());
         Histogram dateHistogram = aggregations.get(dateHistogramKey);
         Collection<? extends Histogram.Bucket> buckets = dateHistogram.getBuckets();

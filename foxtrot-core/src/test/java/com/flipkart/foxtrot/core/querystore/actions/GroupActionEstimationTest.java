@@ -30,11 +30,11 @@ public class GroupActionEstimationTest extends ActionTest {
     @BeforeClass
     public static void setUp() throws Exception {
         List<Document> documents = TestUtils.getGroupDocumentsForEstimation(getMapper());
-        getQueryStore().save(TestUtils.TEST_TABLE_NAME, documents);
+        getQueryStore().saveAll(TestUtils.TEST_TABLE_NAME, documents);
         getElasticsearchConnection().getClient()
                 .indices()
                 .refresh(new RefreshRequest("*"), RequestOptions.DEFAULT);
-        getTableMetadataManager().getFieldMappings(TestUtils.TEST_TABLE_NAME, true, true, 1397658117000L);
+        getTableMetadataManager().getFieldMappings(TestUtils.TEST_TABLE_NAME);
         ((ElasticsearchQueryStore) getQueryStore()).getCardinalityConfig()
                 .setMaxCardinality(15000);
         getTableMetadataManager().updateEstimationData(TestUtils.TEST_TABLE_NAME, 1397658117000L);

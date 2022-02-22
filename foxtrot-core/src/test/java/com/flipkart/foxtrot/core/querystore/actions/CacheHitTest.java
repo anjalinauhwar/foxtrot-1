@@ -17,30 +17,32 @@ package com.flipkart.foxtrot.core.querystore.actions;
 
 import com.flipkart.foxtrot.common.Document;
 import com.flipkart.foxtrot.common.Period;
+import com.flipkart.foxtrot.common.exception.FoxtrotException;
 import com.flipkart.foxtrot.common.histogram.HistogramRequest;
 import com.flipkart.foxtrot.common.query.Filter;
 import com.flipkart.foxtrot.common.query.numeric.GreaterThanFilter;
 import com.flipkart.foxtrot.common.query.numeric.LessThanFilter;
 import com.flipkart.foxtrot.core.TestUtils;
-import com.flipkart.foxtrot.core.exception.FoxtrotException;
 import com.google.common.collect.Lists;
+
+import java.util.List;
+
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  * Created by rishabh.goyal on 02/05/14.
  */
 public class CacheHitTest extends ActionTest {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        super.setup();
         List<Document> documents = TestUtils.getHistogramDocuments(getMapper());
-        getQueryStore().save(TestUtils.TEST_TABLE_NAME, documents);
+        getQueryStore().saveAll(TestUtils.TEST_TABLE_NAME, documents);
         getElasticsearchConnection().getClient()
                 .indices()
                 .refresh(new RefreshRequest("*"), RequestOptions.DEFAULT);
@@ -62,8 +64,9 @@ public class CacheHitTest extends ActionTest {
         lessThanFilter.setValue(System.currentTimeMillis());
         histogramRequest.setFilters(Lists.<Filter>newArrayList(greaterThanFilter, lessThanFilter));
 
-
-        Assert.assertFalse(getQueryExecutor().execute(histogramRequest).isFromCache());
-        Assert.assertTrue(getQueryExecutor().execute(histogramRequest).isFromCache());
+        Assert.assertFalse(getQueryExecutor().execute(histogramRequest)
+                .isFromCache());
+        Assert.assertTrue(getQueryExecutor().execute(histogramRequest)
+                .isFromCache());
     }
 }

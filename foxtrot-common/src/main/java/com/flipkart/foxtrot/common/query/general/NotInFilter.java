@@ -4,23 +4,21 @@ import com.flipkart.foxtrot.common.query.Filter;
 import com.flipkart.foxtrot.common.query.FilterOperator;
 import com.flipkart.foxtrot.common.query.FilterVisitor;
 import com.flipkart.foxtrot.common.util.CollectionUtils;
+
+import java.util.List;
+import java.util.Set;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.List;
-import java.util.Set;
-
 /**
- * Created with IntelliJ IDEA.
- * User: rishabh.goyal
- * Date: 02/09/14
- * Time: 11:46 AM
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: rishabh.goyal Date: 02/09/14 Time: 11:46 AM To change this template use File |
+ * Settings | File Templates.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -37,7 +35,8 @@ public class NotInFilter extends Filter {
     }
 
     @Builder
-    public NotInFilter(String field, List<Object> values) {
+    public NotInFilter(String field,
+                       List<Object> values) {
         super(FilterOperator.not_in, field);
         this.values = values;
     }

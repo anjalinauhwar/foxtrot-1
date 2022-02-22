@@ -14,14 +14,20 @@
 
 package com.google.common.base;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.util.concurrent.TimeUnit.DAYS;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.google.common.annotations.GwtCompatible;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.concurrent.TimeUnit.*;
 
 /**
  * An object that measures elapsed time in nanoseconds. It is useful to measure elapsed time using
@@ -61,6 +67,7 @@ import static java.util.concurrent.TimeUnit.*;
  */
 @GwtCompatible
 public final class Stopwatch {
+
     private final Ticker ticker;
     private boolean isRunning;
     private long elapsedNanos;
@@ -110,10 +117,6 @@ public final class Stopwatch {
         return new Stopwatch(ticker).start();
     }
 
-    static String formatCompact4Digits(double value) {
-        return String.format(Locale.ROOT, "%.4g", value);
-    }
-
     private static TimeUnit chooseUnit(long nanos) {
         if (DAYS.convert(nanos, NANOSECONDS) > 0) {
             return DAYS;
@@ -134,6 +137,10 @@ public final class Stopwatch {
             return MICROSECONDS;
         }
         return NANOSECONDS;
+    }
+
+    static String formatCompact4Digits(double value) {
+        return String.format(Locale.ROOT, "%.4g", value);
     }
 
     private static String abbreviate(TimeUnit unit) {
@@ -166,15 +173,6 @@ public final class Stopwatch {
     }
 
     /**
-     * Returns {@code true} if {@link #start()} has been called on this stopwatch, and {@link #stop()}
-     * has not been called since the last call to {@code
-     * start()}.
-     */
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    /**
      * Starts the stopwatch.
      *
      * @return this {@code Stopwatch} instance
@@ -188,8 +186,15 @@ public final class Stopwatch {
     }
 
     /**
-     * Stops the stopwatch. Future reads will return the fixed duration that had elapsed up to this
-     * point.
+     * Returns {@code true} if {@link #start()} has been called on this stopwatch, and {@link #stop()} has not been
+     * called since the last call to {@code start()}.
+     */
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    /**
+     * Stops the stopwatch. Future reads will return the fixed duration that had elapsed up to this point.
      *
      * @return this {@code Stopwatch} instance
      * @throws IllegalStateException if the stopwatch is already stopped.
@@ -213,10 +218,6 @@ public final class Stopwatch {
         return this;
     }
 
-    private long elapsedNanos() {
-        return isRunning ? ticker.read() - startTick + elapsedNanos : elapsedNanos;
-    }
-
     /**
      * Returns the current elapsed time shown on this stopwatch, expressed in the desired time unit,
      * with any fraction rounded down.
@@ -228,6 +229,12 @@ public final class Stopwatch {
      */
     public long elapsed(TimeUnit desiredUnit) {
         return desiredUnit.convert(elapsedNanos(), NANOSECONDS);
+    }
+
+    private long elapsedNanos() {
+        return isRunning
+                ? ticker.read() - startTick + elapsedNanos
+                : elapsedNanos;
     }
 
     /**

@@ -18,7 +18,8 @@ public class HazelcastHealthCheck extends NamedHealthCheck {
     /**
      * A random UUID to healthcheck
      */
-    private String uuid = UUID.randomUUID().toString();
+    private String uuid = UUID.randomUUID()
+            .toString();
     /**
      * A counter for healthcheck
      */
@@ -31,12 +32,22 @@ public class HazelcastHealthCheck extends NamedHealthCheck {
 
     @Override
     protected Result check() throws Exception {
+        // reset counter if reached max value
+        if (counter == Integer.MAX_VALUE) {
+            counter = 0;
+        }
+
         // Update the counter and store in the map
         counter = counter + 1;
         try {
-            hazelcastConnection.getHazelcast().getMap(HEALTHCHECK_MAP).put(uuid, counter);
-            int toCheck = (int) hazelcastConnection.getHazelcast().getMap(HEALTHCHECK_MAP).get(uuid);
-            return toCheck == counter ? Result.healthy("UUID:" + uuid + ", counter: " + counter + " - OK")
+            hazelcastConnection.getHazelcast()
+                    .getMap(HEALTHCHECK_MAP)
+                    .put(uuid, counter);
+            int toCheck = (int) hazelcastConnection.getHazelcast()
+                    .getMap(HEALTHCHECK_MAP)
+                    .get(uuid);
+            return toCheck == counter
+                    ? Result.healthy("UUID:" + uuid + ", counter: " + counter + " - OK")
                     : Result.unhealthy("UUID:" + uuid + ", counter: " + counter
                     + " Something is wrong: healthCheck count is not updating");
         } catch (Exception e) {

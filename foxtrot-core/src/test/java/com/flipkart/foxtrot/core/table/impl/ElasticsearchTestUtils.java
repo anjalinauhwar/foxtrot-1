@@ -4,7 +4,6 @@ package com.flipkart.foxtrot.core.table.impl;
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- *
  * You may obtain a copy of the License at
  * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -67,37 +66,44 @@ public class ElasticsearchTestUtils {
     private static class ElasticsearchContainerHolder {
 
         @SuppressWarnings("unused")
-        private static boolean containerLoaded;
+        private static volatile boolean containerLoaded;
 
         @Getter
         private static ElasticsearchConfig elasticsearchConfig;
 
-        static {
-            try {
-                ElasticsearchContainerConfiguration configuration = new ElasticsearchContainerConfiguration();
-                configuration.setDockerImage("docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.8");
-                configuration.setClusterRamMb(100);
-                GenericContainer esContainer = new FixedHostPortGenericContainer(configuration.getDockerImage())
-                        .withExposedPorts(configuration.getHttpPort(), configuration.getTransportPort())
-                        .withEnv("cluster.name", "elasticsearch")
-                        .withEnv("discovery.type", "single-node")
-                        .withEnv("ES_JAVA_OPTS", getJavaOpts(configuration))
-                        .withLogConsumer(containerLogsConsumer(log))
-                        .waitingFor(getCompositeWaitStrategy(configuration))
-                        .withStartupTimeout(configuration.getTimeoutDuration());
-                esContainer.start();
+        public static void loadContainer() {
+            synchronized (ElasticsearchContainerHolder.class) {
+                if (!containerLoaded) {
+                    log.info("Loading ES test container...");
+                    try {
+                        ElasticsearchContainerConfiguration configuration = new ElasticsearchContainerConfiguration();
+                        configuration.setDockerImage("docker.elastic.co/elasticsearch/elasticsearch-oss:6.8.8");
+                        configuration.setClusterRamMb(256);
+                        GenericContainer esContainer = new FixedHostPortGenericContainer(
+                                configuration.getDockerImage()).withExposedPorts(configuration.getHttpPort(),
+                                configuration.getTransportPort())
+                                .withEnv("cluster.name", "elasticsearch")
+                                .withEnv("discovery.type", "single-node")
+                                .withEnv("ES_JAVA_OPTS", getJavaOpts(configuration))
+                                .withLogConsumer(containerLogsConsumer(log))
+                                .waitingFor(getCompositeWaitStrategy(configuration))
+                                .withStartupTimeout(configuration.getTimeoutDuration())
+                                .withStartupCheckStrategy(new IsRunningStartupCheckStrategyWithDelay());
+                        esContainer.start();
 
-                Integer mappedPort = esContainer.getMappedPort(configuration.getHttpPort());
+                        Integer mappedPort = esContainer.getMappedPort(configuration.getHttpPort());
 
-                elasticsearchConfig = new ElasticsearchConfig();
-                elasticsearchConfig.setHosts(Collections.singletonList(configuration.getHost()));
-                elasticsearchConfig.setPort(mappedPort);
-                elasticsearchConfig.setConnectionType(ElasticsearchConfig.ConnectionType.HTTP);
-                elasticsearchConfig.setCluster("elasticsearch");
-                elasticsearchConfig.setTableNamePrefix("foxtrot");
-            } catch (Exception e) {
-                log.error("Error in initializing es test container , error :", e);
-                throw e;
+                        elasticsearchConfig = new ElasticsearchConfig();
+                        elasticsearchConfig.setHosts(Collections.singletonList(configuration.getHost()));
+                        elasticsearchConfig.setPort(mappedPort);
+                        elasticsearchConfig.setConnectionType(ElasticsearchConfig.ConnectionType.HTTP);
+                        elasticsearchConfig.setCluster("elasticsearch");
+                        elasticsearchConfig.setTableNamePrefix("foxtrot");
+                    } catch (Exception e) {
+                        log.error("Error in initializing es test container , error :", e);
+                        throw e;
+                    }
+                }
             }
         }
     }

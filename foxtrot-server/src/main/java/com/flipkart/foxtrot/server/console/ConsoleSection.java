@@ -1,13 +1,20 @@
 package com.flipkart.foxtrot.server.console;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+import java.util.Map;
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConsoleSection {
 
@@ -23,37 +30,7 @@ public class ConsoleSection {
 
     private Map<String, ConsoleTile> tileData;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<String> getTileList() {
-        return tileList;
-    }
-
-    public void setTileList(List<String> tileList) {
-        this.tileList = tileList;
-    }
-
-    public Map<String, ConsoleTile> getTileData() {
-        return tileData;
-    }
-
-    public void setTileData(Map<String, ConsoleTile> tileData) {
-        this.tileData = tileData;
-    }
+    private TemplateFilter templateFilter;
 
     @Override
     public String toString() {
@@ -61,6 +38,7 @@ public class ConsoleSection {
                 .append("name", name)
                 .append("tileList", tileList)
                 .append("tileData", tileData)
+                .append("templateFilter", templateFilter)
                 .toString();
     }
 }
