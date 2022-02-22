@@ -206,7 +206,7 @@ public class TenantResourceTest extends FoxtrotResourceTest {
                 .tenantName(TestUtils.TEST_TENANT_NAME)
                 .emailIds(new String[]{TestUtils.TEST_EMAIL})
                 .build();
-        tenant.setEmailIds(new String[]{"test@gmail.com"});
+        tenant.setEmailIds(new String[]{"test@phonepe.com"});
         Entity<Tenant> tenantEntity = Entity.json(tenant);
         Response response = resources.target(String.format("/v1/tenant/%s", TestUtils.TEST_TENANT_NAME))
                 .request()

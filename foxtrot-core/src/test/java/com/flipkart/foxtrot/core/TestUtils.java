@@ -66,7 +66,7 @@ public class TestUtils {
     public static final String TEST_PIPELINE_NAME = "TEST-PIPELINE";
 
     public static final String TEST_TENANT_NAME = "TEST-TENANT";
-    public static final String TEST_EMAIL = "nitishgoyal13@gmail.com";
+    public static final String TEST_EMAIL = "test@phonepe.com";
     public static final Table TEST_TABLE = Table.builder()
             .name(TEST_TABLE_NAME)
             .ttl(7)
