@@ -2,6 +2,7 @@ package com.flipkart.foxtrot.server.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flipkart.foxtrot.core.auth.User;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.security.Principal;

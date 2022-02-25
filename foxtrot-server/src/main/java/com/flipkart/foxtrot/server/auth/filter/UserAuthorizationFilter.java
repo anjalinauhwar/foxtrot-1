@@ -3,6 +3,7 @@ package com.flipkart.foxtrot.server.auth.filter;
 import com.flipkart.foxtrot.server.auth.AuthConfig;
 import com.flipkart.foxtrot.server.auth.JWTAuthenticationFailure;
 import com.flipkart.foxtrot.server.auth.UserPrincipal;
+import com.google.inject.Inject;
 import io.dropwizard.auth.Authorizer;
 
 import javax.annotation.Priority;

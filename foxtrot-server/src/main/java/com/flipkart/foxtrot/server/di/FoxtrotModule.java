@@ -71,11 +71,24 @@ import com.flipkart.foxtrot.core.tenant.impl.DistributedTenantMetadataManager;
 import com.flipkart.foxtrot.core.tenant.impl.FoxtrotTenantManager;
 import com.flipkart.foxtrot.pipeline.resolver.PipelineFetcher;
 import com.flipkart.foxtrot.pipeline.resources.GeojsonStoreConfiguration;
+import com.flipkart.foxtrot.server.auth.AuthConfig;
+import com.flipkart.foxtrot.server.auth.AuthStore;
+import com.flipkart.foxtrot.server.auth.ESAuthStore;
+import com.flipkart.foxtrot.server.auth.IdmanAuthStore;
+import com.flipkart.foxtrot.server.auth.TokenAuthenticator;
+import com.flipkart.foxtrot.server.auth.UserPrincipal;
+import com.flipkart.foxtrot.server.auth.authprovider.AuthProvider;
+import com.flipkart.foxtrot.server.auth.authprovider.NoneAuthProvider;
+import com.flipkart.foxtrot.server.auth.authprovider.impl.GoogleAuthProvider;
+import com.flipkart.foxtrot.server.auth.authprovider.impl.IdmanAuthProvider;
+import com.flipkart.foxtrot.server.auth.sessionstore.DistributedSessionDataStore;
+import com.flipkart.foxtrot.server.auth.sessionstore.SessionDataStore;
 import com.flipkart.foxtrot.server.config.FoxtrotServerConfiguration;
 import com.flipkart.foxtrot.server.console.ConsolePersistence;
 import com.flipkart.foxtrot.server.console.ElasticsearchConsolePersistence;
 import com.flipkart.foxtrot.server.console.QueryManager;
 import com.flipkart.foxtrot.server.console.QueryManagerImpl;
+import com.flipkart.foxtrot.server.resources.OAuth;
 import com.flipkart.foxtrot.sql.fqlstore.FqlStoreService;
 import com.flipkart.foxtrot.sql.fqlstore.FqlStoreServiceImpl;
 import com.foxtrot.flipkart.translator.config.SegregationConfiguration;
@@ -87,9 +100,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
+import io.dropwizard.auth.Authenticator;
 import io.dropwizard.server.ServerFactory;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.util.Duration;
+import java.security.Principal;
+import javax.inject.Provider;
 import org.apache.hadoop.conf.Configuration;
 
 import javax.inject.Singleton;
@@ -107,6 +123,15 @@ public class FoxtrotModule extends AbstractModule {
 
     @Override
     protected void configure() {
+//        bind(AuthConfig.class);
+        bind(ESAuthStore.class);
+        bind(IdmanAuthStore.class);
+        bind(GoogleAuthProvider.class);
+        bind(IdmanAuthProvider.class);
+        bind(NoneAuthProvider.class);
+        bind(AuthProvider.class).to(GoogleAuthProvider.class);
+        bind(AuthStore.class).to(ESAuthStore.class);
+        bind(SessionDataStore.class).to(DistributedSessionDataStore.class);
         bind(TableMetadataManager.class).to(DistributedTableMetadataManager.class);
         bind(TenantMetadataManager.class).to(DistributedTenantMetadataManager.class);
         bind(PipelineMetadataManager.class).to(DistributedPipelineMetadataManager.class);
@@ -388,4 +413,10 @@ public class FoxtrotModule extends AbstractModule {
         }
         return configuration.getNodeGroupActivityConfig();
     }
+
+//    @Provides
+//    @Singleton
+//    public Authenticator<String, UserPrincipal> provideAuthenticator() {
+//        return TokenAuthenticator.class;
+//    }
 }
